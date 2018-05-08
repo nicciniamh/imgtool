@@ -1,4 +1,4 @@
-# Imgtool JPEG Photo tool#
+# Imgtool JPEG Photo tool
 
 Renames, reorients, resizes and/or timestamps jpg files with a unique
 name based on camera model and taken date stored in the exif header. By
