@@ -1,18 +1,4 @@
-# imgtool #
-
-NAME
-SYNOPSIS
-OPTIONS
-WARNING
-AUTHOR
-Copyright
-License
-
-- - -
-
-## NAME  ##
-
-imgtool - JPEG photo tool
+# imgtool - JPEG photo tool
 
 ## SYNOPSIS  ##
 
