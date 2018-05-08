@@ -1,9 +1,16 @@
 # Imgtool JPEG Photo tool
 
-Renames, reorients, resizes and/or timestamps jpg files with a unique
-name based on camera model and taken date stored in the exif header. By
-default imgtool updates the atime/mtime timestamps on a file to match
-the exif header data.
+I have a fairly large collection of digital photos I have taken with my phone and three different Nikon cameras. 
+
+In an effort to have unqique file names, I wrote this tool. I also added the functionality of a couple other operatios I frequently do in post-processing.
+
+A number of graphics tools will honor the Orientation tag in an image, however, on occasion, I find I need to manually rotate an image. More commonly, images get resized and renamed. Sometimes other tools are employed which modify the timestamp of the file, on the files system, which can disrupt sorting. (I use a date descending order in my file manager to show me the most recent photos) The default operation of imgtool is to set the timestamp of the files it finds with the date stamp in the photo's EXIF header. 
+
+## To do list:
+    For --format: Add the ability to specify other EIXF or file variables. 
+    Add a Rotate geometry that specifies a rotation for any image.
+    Add an output file/folder name. 
+
 
 ## Usage
 
@@ -61,3 +68,9 @@ not use this file except in compliance with the License. You may obtain
 a copy of the License at
 
     http://www.apache.org/licenses/LICENSE-2.0
+
+# Installation
+
+To run the installer script, run bash install.sh 
+
+The installer script looks for PATH and MANPATH to present installation directories. Proper permisions (e.g, sudo) must be obtained first. Alternatively the script can be copied anywhere and execute be set (chmod 755). The man page, imgtool.1, can be put in man1 on manpath. 
