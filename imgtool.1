@@ -1,6 +1,15 @@
 .TH  imgtool 1
 .SH NAME
  imgtool - JPEG photo tool
+.SH DESCRIPTION
+Imgtool JPEG Photo tool
+
+Renames, reorients, resizes and/or timestamps jpg files with a unique name based on EXIF tags embedded in 
+the image files. File naming can be very complex using a variety of EXIF tags.
+
+.SH WARNING
+This tool is ALPHA. I have tested it in a limited environment and was written to work with my photographs. It may even be destructive. Backing up data is always a good idea before employing automatic tools that can recurse directories. If you break something, you own the remaining pieces.
+
 .SH SYNOPSIS
 imgtool [-h] [-R] [-c] [-d] [-f FORMAT] [-p Pattern] [-r] [-z GEOMETRY] [--help-geometry] [-v] [-V] [PATH [PATH ...]]
 .SH OPTIONS
@@ -15,7 +24,7 @@ Use embedded EXIF camera name to rename files
 .IP -d|--dry-run
 Show all actions to be performed without doing them. Also sets -v|--verbose
 .IP -f|--format 
-Time format string for filenaming in Python strftime format. Default is '%Y%m%d%H%M%S'
+Time format string for filenaming in Python strftime format. Default is '@Exif.Image.Model[1]_%Y%m%d%H%M%S@File.ext'
 .IP -p|--patern
 Glob format pattern to search for files, e.g., *.jpg, default is *.[Jj][Pp][Gg]
 (see glob(3) and fnmatch(3))
@@ -29,14 +38,37 @@ Set verbose mode: Show operations as they are performed. If -d|--dry-run is also
 Show program version and exit.
 .IP --version
 Print version and exit.
-.BR     
-Imgtool JPEG Photo tool
+.SH Resizing GEOMETRY
+GEOMETRY is used with the -z or --resize options are used.
 
-Renames, reorients, resizes and/or timestamps jpg files with a unique name based on
-camera model and taken date stored in the exif header. By default imgtool updates
-the atime/mtime timestamps on a file to match the exif header data.
-.SH WARNING
-This tool is ALPHA. I have tested it in a limited environment and was written to work with my photographs. It may even be destructive. Backing up data is always a good idea before employing automatic tools that can recurse directories. If you break something, you own the remaining pieces.
+Geometry can be specified as a percentage of the overall image or as a pair of [width]x[height]. 
+Width and height are specified in pixels. If width is specified but no height, e.g., 1000x
+the image will be reized to a width of 1000px with a height calculated in relation to width to
+maintain the image aspect ratio. Conversely, height is specified without a width, e.g., x1000
+will resize the image to 1000px high with a width calculated to maintain the aspect ratio. 
+When the width and height are spcecified no attempt to maintain the aspect ratio is made.
+.SH Format options for filenames
+Formatting filenames for automatic renaming is as follows:
+    [@|+]type.Tag%timefmt
+
+Tags starting with @ have their spaces replaced with periods (.), Tags starting with + 
+do not have spaces replaced. There are two types of tags, File and Exif. File Tags are:
+    File.Name:  Filename of the image without extension
+    File.Ext:   Extension of filename, e.g., .JPG 
+    File.ext:   Extension of filename converted to lower-case, e.g., .jpg
+    File.Fullname: Full name of file with directories.
+    File.mtime: String representation YYYYMMDDhhmmss of the file's timestamp in the filesystem.
+
+ExifTags vary by image and camera. The program exiftool may be useful in finding appropriate tags. 
+With ExifTags, if preceeded by brackets with a number, a substring of the tag value, split by spaces will 
+be returned. These substrings start with 0. If @Exif.Image.Model returns NIKON D3400 then the format string @Exif.Image.Model[1] will return 
+D3400. 
+
+Any EXIF Tag present in the image EXIF header can be used to create all or part of a file name. For example, 
+@Image.Make[1]_@Image.
+
+Time formatting, using the EIXF header's image time, is formatted with strftime formatting. See strftime(3).
+
 
 .SH AUTHOR
 Nicole Stevens (https://github.com/nicciniamh)
