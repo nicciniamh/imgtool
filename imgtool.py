@@ -131,6 +131,7 @@ class fileExif:
         if tag in self.fileInfo:
             return self.fileInfo[tag]
         return ''
+
     def adjustOrientation(self):
         degrees = {3: 180, 6: 270, 8: 90}
         if self.exif is None:
@@ -189,11 +190,17 @@ class fileExif:
 
 
     def tag(self,tag,_type = str):
-        tag = 'Exif.{}'.format(tag.replace(' ','.'))
-        try:
-            tdata = self.exif[tag]
-        except KeyError:
-            return None
+        tag = tag.replace(' ','.')
+        if tag.startswith('Exif.'):
+            try:
+                tdata = self.exif[tag].value
+            except KeyError:
+                tdata = None
+        if tag.startswith('File.'):
+            try:
+                tdata = self.fileInfo[tag]
+            except KeyError:
+                tdata = None
         return _type(tdata)
 
     def _extractExif2(self,match):
@@ -241,9 +248,10 @@ class fileExif:
                             groups.append((typ, idx))
 
         try:
-            tag = str(meta[tag].value)
+            tag = self.tag(tag)
         except:
             return ''
+        #print base,'tag',tag,'groups',groups
         for g in groups:
             if g[0] == 'sub':
                 pstart,pend = g[1]
@@ -252,9 +260,10 @@ class fileExif:
                         pend = len(tag)
                 tag = tag[pstart:pend]
             if g[0] == 'idx':
-                parts = tag.split(' ')
-                if g[1] < len(parts):
-                    tag = parts[g[1]]
+                if tag:
+                    parts = tag.split(' ')
+                    if g[1] < len(parts):
+                        tag = parts[g[1]]
 
         return tag
 
@@ -328,7 +337,7 @@ def geometryHelp():
     parser.print_help()
     print geometry_help
 
-def geometryHelp():
+def formatHelp():
     parser.print_help()
     print format_help
 
@@ -373,7 +382,7 @@ def getparser(alist=None):
                         help='Dump all exif tag keys for first file and exit.')
     parser.add_argument('--help-geometry', action="store_true", dest="geohelp", default=False,
                         help='Show additional help on GEOMETRY and exit.')
-    parser.add_argument('--help-format', action="store_true", dest="geohelp", default=False,
+    parser.add_argument('--help-format', action="store_true", dest="fmthelp", default=False,
                         help='Show help on formatting names for automatic renaming')
     return parser
 
@@ -388,8 +397,13 @@ if __name__ == '__main__':
         print versinfo.format(toolversion)
         parser.print_help() 
         sys.exit(0)
+    
     if args.geohelp:
         geometryHelp()
+        sys.exit(0)
+
+    if args.fmthelp:
+        formatHelp()
         sys.exit(0)
 
     if args.resize:
@@ -407,6 +421,8 @@ if __name__ == '__main__':
     rename = args.rename
     verbose = args.verbose 
     dry = args.dry
+    #!!!
+    dry = True
     if dry:
         verbose = True
 
