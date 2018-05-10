@@ -47,19 +47,40 @@ Formatting filenames for automatic renaming is as follows:
 
 Tags starting with @ have their spaces replaced with periods (.), Tags starting with + 
 do not have spaces replaced. There are two types of tags, File and Exif. File Tags are:
+
     File.Name:  Filename of the image without extension
     File.Ext:   Extension of filename, e.g., .JPG 
     File.ext:   Extension of filename converted to lower-case, e.g., .jpg
     File.Fullname: Full name of file with directories.
     File.mtime: String representation YYYYMMDDhhmmss of the file's timestamp in the filesystem.
 
-ExifTags vary by image and camera. The program exiftool may be useful in finding appropriate tags. 
-With ExifTags, if preceeded by brackets with a number, a substring of the tag value, split by spaces will 
-be returned. These substrings start with 0. If @Exif.Image.Model returns NIKON D3400 then the format string @Exif.Image.Model[1] will return 
-D3400. 
+
+EXIF Tags vary by image and camera. The program exiftool may be useful in finding appropriate tags. 
+When specifying EXIF Tags, they are formatted as Exif.Image.Model which results in a string, for one 
+of my cameras, as 'NIKON D3400', by default the resultant string will have spaced replaced with 
+periods (.), to suppress this behavior, precede them with a plus (+). E.g.:
+
+    @Exif.Image.Make returns 'NIKON.D3400' where +Exif.Image.Make returns 'NIKON D3400' 
+
+This conversion is done just before substituting the tag with its value. 
+
+Splitting strings in tags:
+Splitting the tag values can be done as an index of space separated words or as a substring. 
+
+To use an index, 
+place the index number in brackets, e.g, @Exif.Image.Make[1] returns 'D3400' instead of 'NIKON D3400'. 
+Index values start with 0. 
+
+To use a substring, place the start and, optionally the length in parentheses. E.g,
+@Exif.Image.Make(7,5) will return 'D3400' instead of 'NIKON D3400'. If the second value is omitted the 
+length of the value, starting at the first number is presumed, so @Exif.Image.Make(7) will also result 
+with 'D3400'
 
 Any EXIF Tag present in the image EXIF header can be used to create all or part of a file name. For example, 
-@Image.Make[1]_@Image.
+@Image.Make[1]_@File.name@File.ext will create, from DSC_328.JPG a name of 'D3400_DSC_328.jpg'
+
+Note that the @File tags are never evaluated with a plus instead of an at-sign, and no indexing or substring
+operations are performed.
 
 Time formatting, using the EIXF header's image time, is formatted with strftime formatting. See strftime(3).
 
@@ -80,8 +101,8 @@ dry = True
 class fileExif:
     """ Read file exif data and process tags """
     def __init__(self,file,timeformat = defaultTimeFormat):
-        self._renospc = r'\@[A-Za-z\.]*(\[[0-9]*\])?'
-        self._renoxlt = r'\+[A-Za-z\.]*(\[[0-9]*\])?'
+        self._renospc = '(\@[A-Za-z\.0-9]*[\(\)\[\]\,0-9]*)'
+        self._renoxlt = self._renospc.replace('@','+')
 
         self.timeformat = timeformat
         try:
@@ -173,27 +194,66 @@ class fileExif:
         return _type(tdata)
 
     def _extractExif2(self,match):
-        tag = '{}'.format(str(match.group())[1:])
-        if tag.startswith('File.'):
-            return self.fileTag(tag)
+        def ispunct(s):
+            return s is not None and ord(s[0]) > 32 and not s[0].isalnum()
+        tregex = r'(\([0-9]*\,?[0-9]*?\))|(\[[0-9]*\])'
+        tokens = []
+        groups = []
+        tag  = ''
+        base = match.group()
+        tlist = re.split(tregex,base)
+
+        for token in tlist:
+            if token and ispunct(token):
+                tokens.append(token)
+        
+        if not len(tokens):
+            return ''
+
+        srch = {
+                'tag': r'[\@\+]{1}[A-Za-z\.]*',
+                'sub': r'\(([0-9]*)\,?([0-9]*)?\)*',
+                'idx': r'\[([0-9]*)\]*',
+        }
+
+        for item in tokens:
+            if item:
+                for typ,rx in srch.items():
+                    m = re.match(rx,item)
+                    if m:
+                        if typ == 'tag':
+                            tag = item[1:]
+                        if typ == 'sub':
+                            pstart = int(m.groups()[0])
+                            if m.groups()[1]:
+                                pend = pstart + int(m.groups()[1])
+                            else:
+                                pend = -1
+                            groups.append((typ, (pstart,pend)))
+                        if typ == 'idx':
+                            if not m.groups()[0]:
+                                idx = -1
+                            else:
+                                idx = int(m.groups()[0])
+                            groups.append((typ, idx))
+
         try:
-            p = match.groups()[0]
-            if p:
-                tag = tag.replace(p,'')
-                p = re.sub(r'[\[\]]','',p)
-                if len(p):
-                    p = int(p)
+            tag = str(meta[tag].value)
         except:
-            p = None
-        try:
-            x = str(self.exif[tag].value)
-        except:
-            x = ''
-        if type(p) is int:
-            xa = x.split(' ')
-            if p < len(xa):
-                x = xa[p]
-        return x
+            return ''
+        for g in groups:
+            if g[0] == 'sub':
+                pstart,pend = g[1]
+                if pstart < len(tag):
+                    if pend == -1 or pend >= len(tag):
+                        pend = len(tag)
+                tag = tag[pstart:pend]
+            if g[0] == 'idx':
+                parts = tag.split(' ')
+                if g[1] < len(parts):
+                    tag = parts[g[1]]
+
+        return tag
 
     def _extractExif1(self,match):
         return self._extractExif2(match).replace(' ','.')

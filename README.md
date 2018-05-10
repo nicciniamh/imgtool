@@ -2,7 +2,7 @@
 
 I have a fairly large collection of digital photos I have taken with my phone and three different Nikon cameras. 
 
-In an effort to have unqique file names, I wrote this tool. I also added the functionality of a couple other operatios I frequently do in post-processing.
+In an effort to have unqique file names, I wrote this tool. I also added the functionality of a couple other operations I frequently do in post-processing.
 
 A number of graphics tools will honor the Orientation tag in an image, however, on occasion, I find I need to manually rotate an image. More commonly, images get resized and renamed. Sometimes other tools are employed which modify the timestamp of the file, on the files system, which can disrupt sorting. (I use a date descending order in my file manager to show me the most recent photos) The default operation of imgtool is to set the timestamp of the files it finds with the date stamp in the photo's EXIF header. 
 
@@ -45,24 +45,49 @@ A number of graphics tools will honor the Orientation tag in an image, however, 
 When using the -z or --resize option, a geometry must be specified. Geometry can be specified as a percentage of the overall image or as a pair of width:height.  Width and height are specified in pixels. If width is specified but no height, e.g., 1000: the image will be reized to a width of 1000px with a height calculated in relation to width to maintain the image aspect ratio. Conversely, height is specified without a width, e.g., :1000 will resize the image to 1000px high with a width calculated to maintain the aspect ratio.  When the width and height are spcecified no attempt to maintain the aspect ratio is made.
 
 ## Automatic Image Naming
+
 Formatting filenames for automatic renaming is as follows:
     [@|+]type.Tag%timefmt
 
 Tags starting with @ have their spaces replaced with periods (.), Tags starting with + 
 do not have spaces replaced. There are two types of tags, File and Exif. File Tags are:
+
     File.Name:  Filename of the image without extension
     File.Ext:   Extension of filename, e.g., .JPG 
     File.ext:   Extension of filename converted to lower-case, e.g., .jpg
     File.Fullname: Full name of file with directories.
     File.mtime: String representation YYYYMMDDhhmmss of the file's timestamp in the filesystem.
 
-ExifTags vary by image and camera. The program exiftool may be useful in finding appropriate tags. 
-With ExifTags, if preceeded by brackets with a number, a substring of the tag value, split by spaces will 
-be returned. These substrings start with 0. If @Exif.Image.Model returns NIKON D3400 then the format string  
-@Exif.Image.Model[1] will return D3400. 
 
-Any EXIF Tag present in the image EXIF header can be used to create all or part of a file name. The default formatting used is `@Exif.Image.Model[1]_%Y%m%d%H%M%S@file.ext` which may result in a name of D3400_20180428155946.jpg
+EXIF Tags vary by image and camera. The program exiftool may be useful in finding appropriate tags. 
+When specifying EXIF Tags, they are formatted as Exif.Image.Model which results in a string, for one 
+of my cameras, as 'NIKON D3400', by default the resultant string will have spaced replaced with 
+periods (.), to suppress this behavior, precede them with a plus (+). E.g.:
 
+    @Exif.Image.Make returns 'NIKON.D3400' where +Exif.Image.Make returns 'NIKON D3400' 
+
+This conversion is done just before substituting the tag with its value. 
+
+### Splitting strings in tags
+Splitting the tag values can be done as an index of space separated words or as a substring. 
+
+#### Indexing
+To use an index, 
+place the index number in brackets, e.g, @Exif.Image.Make[1] returns 'D3400' instead of 'NIKON D3400'. 
+Index values start with 0. 
+
+#### Substrings
+To use a substring, place the start and, optionally the length in parentheses. E.g,
+@Exif.Image.Make(7,5) will return 'D3400' instead of 'NIKON D3400'. If the second value is omitted the 
+length of the value, starting at the first number is presumed, so @Exif.Image.Make(7) will also result 
+with 'D3400'
+
+Any EXIF Tag present in the image EXIF header can be used to create all or part of a file name. For example, 
+@Image.Make[1]_@File.name@File.ext will create, from DSC_328.JPG a name of 'D3400_DSC_328.jpg'.`
+
+
+Note that the @File tags are never evaluated with a plus instead of an at-sign, and no indexing or substring
+operations are performed.
 
 Time formatting, using the EIXF header's image time, is formatted with the following formatting:
        %a     The abbreviated name of the day of the week according to the
