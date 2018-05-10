@@ -14,7 +14,7 @@ A number of graphics tools will honor the Orientation tag in an image, however, 
 
 ## Usage
 
-`imgtool [-h] [-R] [-c] [-D] [-f FORMAT] [-p Pattern] [-r] [-z GEOMETRY] [--help-geometry] [-v] [-V] [PATH [PATH ...]]`
+`imgtool [-h] [-R] [-c] [-d] [-f FORMAT] [-p Pattern] [-r] [-z GEOMETRY] [--help-geometry] [-v] [-V] [--dumpkeys] [PATH [PATH ...]]`
 
 ## Program Options  ##
 
@@ -39,6 +39,7 @@ A number of graphics tools will honor the Orientation tag in an image, however, 
 **-v|--verbose** - *Set verbose mode: Show operations as they are performed. If -d|--dry-run is also set, operations are shown without actually doing them.*
 
 **-V|--version** - *Show program version and exit.*
+**--dumpkeys** - Dump EXIF tag keys for first found file and exit. May be used to help with formatting.
 
 ## GEOMETRY
 

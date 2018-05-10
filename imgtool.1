@@ -11,12 +11,14 @@ the image files. File naming can be very complex using a variety of EXIF tags.
 This tool is ALPHA. I have tested it in a limited environment and was written to work with my photographs. It may even be destructive. Backing up data is always a good idea before employing automatic tools that can recurse directories. If you break something, you own the remaining pieces.
 
 .SH SYNOPSIS
-imgtool [-h] [-R] [-c] [-d] [-f FORMAT] [-p Pattern] [-r] [-z GEOMETRY] [--help-geometry] [-v] [-V] [PATH [PATH ...]]
+imgtool [-h] [-R] [-c] [-d] [-f FORMAT] [-p Pattern] [-r] [-z GEOMETRY] [--help-geometry] [-v] [-V] [--dumpkeys] [PATH [PATH ...]]
 .SH OPTIONS
 .IP -h|--help
 Show help text
 .IP --help-geometry
 Show help on resize geometry
+.IP --help-format
+Show help on automatic renaming format
 .IP -R|--recurse
 Recurse into subdirectories
 .IP -c|--camera-names
@@ -36,8 +38,8 @@ Resize image(s) based on geometry.
 Set verbose mode: Show operations as they are performed. If -d|--dry-run is also set, operations are shown without actually doing them.
 .IP -V|--version
 Show program version and exit.
-.IP --version
-Print version and exit.
+.IP --dumpkeys
+Dump the EXIF Tag Keys from first found file and exit.
 .SH Resizing GEOMETRY
 GEOMETRY is used with the -z or --resize options are used.
 

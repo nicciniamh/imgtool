@@ -123,7 +123,10 @@ class fileExif:
                          'File.FullName': self.file,
                          'File.mtime': time.strftime('%Y%m%d%H%M%S',time.localtime(self.mtime))
                     }
-
+    def dumpkeys(self):
+        for k in self.exif.exif_keys:
+            print k
+            
     def fileTag(self,tag):
         if tag in self.fileInfo:
             return self.fileInfo[tag]
@@ -366,6 +369,8 @@ def getparser(alist=None):
                         help='Be chatty about what is being done.')
     parser.add_argument('-V','--version', action='store_true', dest='dispversion', default=False,
                         help='Show version information and exit.')
+    parser.add_argument('--dumpkeys',action='store_true', dest='dumpkeys', default=False,
+                        help='Dump all exif tag keys for first file and exit.')
     parser.add_argument('--help-geometry', action="store_true", dest="geohelp", default=False,
                         help='Show additional help on GEOMETRY and exit.')
     parser.add_argument('--help-format', action="store_true", dest="geohelp", default=False,
@@ -432,6 +437,10 @@ if __name__ == '__main__':
     
     if len(flist) < 1:
         print >>sys.stderr,'Nothing to do.'
+
+    if args.dumpkeys:
+        fileExif(flist[0]).dumpkeys()
+        sys.exit(0)
 
     for file in flist:
         if not os.path.isdir(file):
