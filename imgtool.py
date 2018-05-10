@@ -33,56 +33,68 @@ limitations under the License.
 geometry_help = """
 GEOMETRY is used with the -z or --resize options are used.
 
-Geometry can be specified as a percentage of the overall image or as a pair of [width]x[height]. 
-Width and height are specified in pixels. If width is specified but no height, e.g., 1000x
-the image will be reized to a width of 1000px with a height calculated in relation to width to
-maintain the image aspect ratio. Conversely, height is specified without a width, e.g., x1000
-will resize the image to 1000px high with a width calculated to maintain the aspect ratio. 
-When the width and height are spcecified no attempt to maintain the aspect ratio is made.
+Geometry can be specified as a percentage of the overall image or as
+a pair of [width]x[height]. Width and height are specified in pixels.
+If width is specified but no height, e.g., 1000x the image will be
+resized to a width of 1000px with a height calculated in relation to
+width to maintain the image aspect ratio. Conversely, height is specified
+without a width, e.g., x1000 will resize the image to 1000px high with a
+width calculated to maintain the aspect ratio. When the width and height are
+spcecified no attempt to maintain the aspect ratio is made.
 """
 
 format_help = """
 Formatting filenames for automatic renaming is as follows:
     [@|+]type.Tag%timefmt
 
-Tags starting with @ have their spaces replaced with periods (.), Tags starting with + 
-do not have spaces replaced. There are two types of tags, File and Exif. File Tags are:
+Tags starting with @ have their spaces replaced with periods (.), Tags 
+starting with + do not have spaces replaced. There are two types of tags, 
+File and Exif. File Tags are:
 
     File.Name:  Filename of the image without extension
     File.Ext:   Extension of filename, e.g., .JPG 
     File.ext:   Extension of filename converted to lower-case, e.g., .jpg
     File.Fullname: Full name of file with directories.
-    File.mtime: String representation YYYYMMDDhhmmss of the file's timestamp in the filesystem.
+    File.mtime: String representation YYYYMMDDhhmmss of the file's 
+                timestamp in the filesystem.
 
 
-EXIF Tags vary by image and camera. The program exiftool may be useful in finding appropriate tags. 
-When specifying EXIF Tags, they are formatted as Exif.Image.Model which results in a string, for one 
-of my cameras, as 'NIKON D3400', by default the resultant string will have spaced replaced with 
-periods (.), to suppress this behavior, precede them with a plus (+). E.g.:
+EXIF Tags vary by image and camera. Running imgtool --dumpexif <image> may
+be useful in finding appropriate tags. When specifying EXIF Tags, they are
+formatted as Exif.Image.Model which results in a string, for one of my cameras,
+as 'NIKON D3400', by default the resultant string will have spaced replaced 
+with periods (.), to suppress this behavior, precede them with a plus (+).
+E.g.:
 
-    @Exif.Image.Make returns 'NIKON.D3400' where +Exif.Image.Make returns 'NIKON D3400' 
+    @Exif.Image.Make returns 'NIKON.D3400'
+    and
+    +Exif.Image.Make returns 'NIKON D3400' 
 
 This conversion is done just before substituting the tag with its value. 
 
 Splitting strings in tags:
-Splitting the tag values can be done as an index of space separated words or as a substring. 
+Splitting the tag values can be done as an index of space separated words 
+or as a substring. 
 
 To use an index, 
-place the index number in brackets, e.g, @Exif.Image.Make[1] returns 'D3400' instead of 'NIKON D3400'. 
-Index values start with 0. 
+place the index number in brackets, e.g, @Exif.Image.Make[1] returns 
+'D3400' instead of 'NIKON D3400'. Index values start with 0. 
 
-To use a substring, place the start and, optionally the length in parentheses. E.g,
-@Exif.Image.Make(7,5) will return 'D3400' instead of 'NIKON D3400'. If the second value is omitted the 
-length of the value, starting at the first number is presumed, so @Exif.Image.Make(7) will also result 
-with 'D3400'
+To use a substring, place the start and, optionally the length in 
+parentheses. E.g, @Exif.Image.Make(7,5) will return 'D3400' instead of 
+'NIKON D3400'. If the second value is omitted the length of the value,
+starting at the first number is presumed, so @Exif.Image.Make(7) will 
+also result with 'D3400'
 
-Any EXIF Tag present in the image EXIF header can be used to create all or part of a file name. For example, 
-@Image.Make[1]_@File.name@File.ext will create, from DSC_328.JPG a name of 'D3400_DSC_328.jpg'
+Any EXIF Tag present in the image EXIF header can be used to create all
+or part of a file name. For example, @Image.Make[1]_@File.name@File.ext
+will create, from DSC_328.JPG a name of 'D3400_DSC_328.jpg'
 
-Note that the @File tags are never evaluated with a plus instead of an at-sign, and no indexing or substring
-operations are performed.
+Note that the @File tags are never evaluated with a plus instead of 
+an at-sign (@), and no indexing or substring operations are performed.
 
-Time formatting, using the EIXF header's image time, is formatted with strftime formatting. See strftime(3).
+Time formatting, using the EIXF header's image time, is formatted with
+strftime formatting. See strftime(3).
 
 """
 
