@@ -1,9 +1,9 @@
 #!/usr/bin/env python2
-import os, sys, datetime, time, exifread, fnmatch, glob2, re, pyexiv2
+import os, sys, datetime, time, fnmatch, glob2, re, pyexiv2
 from PIL import Image
 from PIL import ExifTags
 from argparse import ArgumentParser
-toolversion = '0.1'
+toolversion = '0.3'
 
 description = """
 Imgtool version {} - Copyright 2018 Nicole Stevens - Image manipulation tool:  
@@ -172,7 +172,7 @@ class fileExif:
         try:
             if self.exif['Exif.Image.Orientation'].value in degrees:
                 image = Image.open(self.file)
-                rot = degrees[m['Exif.Image.Orientation'].value]
+                rot = degrees[self.exif['Exif.Image.Orientation'].value]
                 if verbose:
                     logger('INFO','Rotate image {} by {} degrees'.format(self.file,rot))
                 if not dry:
@@ -182,7 +182,7 @@ class fileExif:
                     self.exif.write()
             else:
                 if verbose:
-                    logger('INFO','Not rotating image, {}, either {} is not in list or does not need rotation.'.format(self.file,m['Exif.Image.Orientation'].value))
+                    logger('INFO','Not rotating image, {}, either {} is not in list or does not need rotation.'.format(self.file,self.exif['Exif.Image.Orientation'].value))
         except Exception as e:
             raise IOError('Cannot rotate image {}: {}'.format(self.file,e))
 
