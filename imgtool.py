@@ -99,9 +99,10 @@ strftime formatting. See strftime(3).
 """
 
 progwarning = """
-WARNING: This tool was written to work with my photographs. It may even be destructive. Backing up 
-data is always a good idea before employing automatic tools that can recurse directories. If you 
-break something, you own the remaining pieces."""
+WARNING: This tool was written to work with my photographs. It may even
+be destructive. Backing up data is always a good idea before employing
+ automatic tools that can recurse directories. If you break something, 
+ you own the remaining pieces."""
 
 defaultTimeFormat='@Exif.Image.Model[1]_%Y%m%d%H%M%S@File.ext'
 timeformatHelp='Set the time format used for naming files, in python strftime format, default is "{}"'.format(defaultTimeFormat.replace('%','%%'))
@@ -109,6 +110,23 @@ timeformatHelp='Set the time format used for naming files, in python strftime fo
 recurse = False
 rename = False
 dry = True
+
+class log:
+    def __init__(self,out=sys.stdout,err=sys.stderr):
+        self.out=out
+        self.err=err
+
+    def logout(self,tag,s):
+        print >>self.out,'{}: {}'.format(tag,s)
+
+    def errout(self,msg):
+        print >>self.err,'ERROR',msg
+
+    def __call__(self,tag,msg):
+        self.logout(tag,msg)
+
+logger = log()
+error = log.errout
 
 class fileExif:
     """ Read file exif data and process tags """
@@ -120,7 +138,8 @@ class fileExif:
         try:
             self.mtime = os.stat(file).st_mtime
         except Exception as e:
-            print >> sys.stderr, "Cannot stat {}: {}".format(file,e)
+            error("Cannot stat {}: {}".format(file,e))
+            raise e
             
         self.file = file
         try:
@@ -137,7 +156,7 @@ class fileExif:
                     }
     def dumpkeys(self):
         for k in self.exif.exif_keys:
-            print k
+            logger('KEYDUMP',k)
 
     def fileTag(self,tag):
         if tag in self.fileInfo:
@@ -148,14 +167,14 @@ class fileExif:
         degrees = {3: 180, 6: 270, 8: 90}
         if self.exif is None:
             if verbose:
-                print 'Not rotating image {}: No EXIF data.'.format(self.file)
+                logger('INFO','Not rotating image {}: No EXIF data.'.format(self.file))
             return
         try:
             if self.exif['Exif.Image.Orientation'].value in degrees:
                 image = Image.open(self.file)
                 rot = degrees[m['Exif.Image.Orientation'].value]
                 if verbose:
-                    print 'Rotate image {} by {} degrees'.format(self.file,rot)
+                    logger('INFO','Rotate image {} by {} degrees'.format(self.file,rot))
                 if not dry:
                     image=image.rotate(rot, expand=True)
                     image.save(self.file)
@@ -163,7 +182,7 @@ class fileExif:
                     self.exif.write()
             else:
                 if verbose:
-                    print 'Not rotating image, {}, either {} is not in list or does not need rotation.'.format(self.file,m['Exif.Image.Orientation'].value)
+                    logger('INFO','Not rotating image, {}, either {} is not in list or does not need rotation.'.format(self.file,m['Exif.Image.Orientation'].value))
         except Exception as e:
             raise IOError('Cannot rotate image {}: {}'.format(self.file,e))
 
@@ -192,7 +211,7 @@ class fileExif:
 
             rw,rh = map(int,[rw,rh])
             if verbose:
-                print 'Resize {} to {}x{}'.format(self.file,rw,rh)
+                logger('INFO','Resize {} to {}x{}'.format(self.file,rw,rh))
             i = image.resize((rw,rh), Image.ANTIALIAS)
             imexif = image.info['exif']
             if not dry:
@@ -263,7 +282,6 @@ class fileExif:
             tag = self.tag(tag)
         except:
             return ''
-        #print base,'tag',tag,'groups',groups
         for g in groups:
             if g[0] == 'sub':
                 pstart,pend = g[1]
@@ -318,7 +336,8 @@ def setFileInfo(path,fname,exif,rename):
                     try:
                         os.rename(fname,newname)
                     except Exception as e:
-                        print >> sys.stderr, "Error renaming file {} to {}: {}".format(fname,newname,e)
+                        error(sys.stderr, "Error renaming file {} to {}: {}".format(fname,newname,e))
+                        raise e
     if tstamp:
         if not newname:
             newname = fname 
@@ -327,11 +346,11 @@ def setFileInfo(path,fname,exif,rename):
             try:
                 os.utime(newname,(tstamp,tstamp))
             except Exception as e:
-                print >> sys.stderr, "Error setting date on {}: {}".format(fname,e)
+                error("Error setting date on {}: {}".format(fname,e))
     if dry or verbose:
         if info == '':
             info = 'No Action'
-        print 'File {}: {}'.format(fname,info)
+        logger('INFO','File {}: {}'.format(fname,info))
 
 def getFileList(dir,recurse,pat):
     flist = []
@@ -363,7 +382,7 @@ def checkGeometrySpec(geometry):
     return False
 
 def getparser(alist=None):
-    
+    cwd = os.getcwd()
     if alist:
         parser = ArgumentParser(alist,
             description=description, epilog=progwarning)
@@ -424,8 +443,8 @@ if __name__ == '__main__':
             if not geoSpec:
                 raise ValueError()
         except Exception as e:
-            print >>sys.stderr,"{} is an invalid geometry\n".format(args.resize)
-            print >>sys.stderr,"Use --help-geometry for information on size geometry."
+            error("{} is an invalid geometry\n".format(args.resize))
+            error("Use --help-geometry for information on size geometry.")
 
         if not geoSpec:
             sys.exit(1)
@@ -433,8 +452,7 @@ if __name__ == '__main__':
     rename = args.rename
     verbose = args.verbose 
     dry = args.dry
-    #!!!
-    dry = True
+
     if dry:
         verbose = True
 
@@ -456,13 +474,13 @@ if __name__ == '__main__':
                     flist.extend(getFileList(f,recurse,globPat))
                 else:
                     if verbose:
-                        print >>sys.stderr, "--recurse not set. {} is a directory. Cannot process.".format(f)
+                        error("--recurse not set. {} is a directory. Cannot process.".format(f))
             else:
                 if fnmatch.fnmatch(f,globPat):
                     flist.append(f)
     
     if len(flist) < 1:
-        print >>sys.stderr,'Nothing to do.'
+        error('Nothing to do.')
 
     if args.dumpkeys:
         fileExif(flist[0]).dumpkeys()
@@ -474,13 +492,7 @@ if __name__ == '__main__':
             fname = os.path.basename(file) 
             exif = fileExif(file,args.timeformat)
             if args.rotate:
-                if dry:
-                    print 'Would rotate'
-                else:
-                    exif.adjustOrientation()
+                exif.adjustOrientation()
             if args.resize:
-                if dry:
-                    print 'Would resize '
-                else:
-                    exif.resize(geoSpec,args.resize)
+                exif.resize(geoSpec,args.resize)
             setFileInfo(dir,fname,exif,rename)
