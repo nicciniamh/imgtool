@@ -126,7 +126,7 @@ class fileExif:
     def dumpkeys(self):
         for k in self.exif.exif_keys:
             print k
-            
+
     def fileTag(self,tag):
         if tag in self.fileInfo:
             return self.fileInfo[tag]
@@ -407,8 +407,6 @@ if __name__ == '__main__':
     rename = args.rename
     verbose = args.verbose 
     dry = args.dry
-    #!!!
-    dry = True
     if dry:
         verbose = True
 
