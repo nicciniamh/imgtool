@@ -56,11 +56,22 @@ Specify geometry for the thumbnails created. Percentages can be used but are not
 
 .SH Help Options
 .IP -h|--help
-Show help text
+Show help text.
 .IP --help-geometry
-Show help on resize geometry
+Show help on resize geometry.
 .IP --help-format
-Show help on automatic renaming format
+Show help on automatic renaming format.
+
+.SH Order of operations
+Each image processed, if the operations are specified, has their operations peformed in this order:
+.IP
+Image resize
+.IP
+Auto-rotation
+.IP
+Dating and/or Renaming
+.IP
+Thumbnail generation
 
 .SH Geometry Specifications
 Geometry can be specified as a percentage of the overall image or as a pair of [width]x[height]. 
