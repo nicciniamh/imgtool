@@ -31,8 +31,6 @@ limitations under the License.
 """.format(description)
 
 geometry_help = """
-GEOMETRY is used with the -z or --resize options are used.
-
 Geometry can be specified as a percentage of the overall image or as
 a pair of [width]x[height]. Width and height are specified in pixels.
 If width is specified but no height, e.g., 1000x the image will be
@@ -126,7 +124,7 @@ class log:
         self.logout(tag,msg)
 
 logger = log()
-error = log.errout
+error = logger.errout
 
 class fileExif:
     """ Read file exif data and process tags """
@@ -192,16 +190,16 @@ class fileExif:
         else:
             return int(s)
 
-    def resize(self,gspec,geometry):
+    def resize(self,geometry):
         try:
             image = Image.open(self.file)
             [imw,imh] = map(float,image.size)
 
-            if gspec == 'P':
-                p = float(geometry.split('%')[0])/100.0
+            if type(geometry) is float:
+                p = geometry
                 [rw,rh] = map(lambda x: x*p, [imw,imh])
             else:
-                [rw,rh] = map(self.__coord,geometry.split('x'))
+                [rw,rh] = geometry
                 if rh and not rw:
                     hpercent = rh/imh
                     rw = imw*hpercent
@@ -218,6 +216,43 @@ class fileExif:
                 i.save(self.file, exif=imexif)
         except Exception as e:
             raise IOError('Cannot resize {}: {}'.format(self.file,e))
+
+    def thumbnail(self,image,size = (96,96),color=None):
+        ''' Create a thumbnail image from the source image and return the newly created image.
+        '''
+        i = Image.new('RGBA',image.size,color)
+        if type(size) is float:
+            size = map(lambda x: int(x*p), size)
+
+        i.paste(image)
+        i.thumbnail(size)
+        b = Image.new('RGBA',size,color)
+        left,top = [0,0]
+        if i.size[0] < size[0]:
+            left = (b.size[0] /2 ) - (i.size[0]/2)
+
+        if i.size[1] < size[1]:
+            top = (b.size[1] /2 ) - (i.size[1]/2)
+
+        box = (left,top)
+
+        b.paste(i,box)
+        return b
+
+    def genThumbFile(self, fname, size, thumbdir=False):
+        [dir,name] = os.path.split(fname)
+        if thumbdir:
+            dir = thumbdir
+        if verbose:
+            logger('INFO','Generate thumbnail for {} {} in {}'.format(fname,size,dir))
+        i = Image.open(fname)
+        name = '{}-thumb{}'.format(os.path.splitext(name)[0],'.png')
+        fname = os.path.join(dir,name)
+        t = self.thumbnail(i,size)
+        if verbose:
+            logger('INFO','Writing {} thumbnail to {}'.format(t.size,fname))
+        if not dry:
+            t.save(fname)
 
 
     def tag(self,tag,_type = str):
@@ -351,6 +386,10 @@ def setFileInfo(path,fname,exif,rename):
         if info == '':
             info = 'No Action'
         logger('INFO','File {}: {}'.format(fname,info))
+    if newname:
+        return newname
+    else:
+        return fname
 
 def getFileList(dir,recurse,pat):
     flist = []
@@ -372,22 +411,23 @@ def formatHelp():
     parser.print_help()
     print format_help
 
-def checkGeometrySpec(geometry):
-    rPerc = r"^[0-9]{1,2}\%$"               # regex to match percentage
-    rCart = r"^[0-9]{0,10}\x[0-9]{0,10}$"   # regex to match cartesians
-    if re.match(rPerc,geometry):
-        return 'P'
-    if re.match(rCart,geometry):
-        return 'C'
-    return False
+def checkGeometry(geometry):
+    try:
+        if '%' in geometry:
+            geometry = float(geometry.split('%')[0])/100.0
+        elif 'x' in geometry:
+            geometry = map(int,geometry.split('x'))
+        else:
+            geometry = None
+    except:
+        geometry = None
+    return geometry
 
-def getparser(alist=None):
+if __name__ == '__main__':
+    globPat = '*.[Jj][Pp][Gg]'
+
     cwd = os.getcwd()
-    if alist:
-        parser = ArgumentParser(alist,
-            description=description, epilog=progwarning)
-    else:
-        parser = ArgumentParser(description=description, epilog=progwarning)
+    parser = ArgumentParser(description=description, epilog=progwarning)
 
     parser.add_argument("-R", "--recurse", dest="recurse", default = False, action='store_true',
                         help="Recurse into sub-directories")
@@ -396,32 +436,32 @@ def getparser(alist=None):
     parser.add_argument("-D", "--dry_run",action="store_true", dest="dry", default=False,
                         help="Dry run: show what will be done without actually doing it. (sets verbose too.)")
     parser.add_argument('-f', '--format', action='store', dest='timeformat', default=defaultTimeFormat,
-                        metavar='FORMAT',help=timeformatHelp)
+                        metavar='format-string',help=timeformatHelp)
     parser.add_argument('-p', '--pattern', action='store', dest='pat', default=None,
-                        metavar='Pattern',help='Pattern, e.g, *.jpg, to match files against.')
+                        metavar='Pattern',help='Pattern, e.g, *.jpg, to match')
     parser.add_argument('-r', '--auto-rotate', action="store_true", dest="rotate", default=False,
                         help="Automatically rotate images.")
-    parser.add_argument('-z', '--resize', action='store', dest='resize', default=None, metavar='GEOMETRY',
-                        help='Resize Images by: x%% or (width:height) if width or heigh is blank, Automatically calcualte based on the present value.')
-    parser.add_argument('list', metavar='PATH', type=str, nargs='*',
-                        help='File(s) or sub-directories to process')
+    parser.add_argument('-t', '--thumbnail', action='store_true', dest='genthumbs', default=False, 
+                        help='Generate thumbnails in the same output path. Use --thumb-geometry to override default of 96x96, use --thumb-dir to override output directory.')
+    parser.add_argument('--thumb-dir',action='store', default=None, dest='thumbdir', metavar='directory',
+                        help='Override thumbnail output directory.')
+    parser.add_argument('--thumb-geometry',action='store', default=None, dest='thumbgeo', metavar='geometry',
+                        help='Override thumbnail size with geometry, see --help-geometry')
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False,
                         help='Be chatty about what is being done.')
     parser.add_argument('-V','--version', action='store_true', dest='dispversion', default=False,
                         help='Show version information and exit.')
+    parser.add_argument('-z', '--resize', action='store', dest='resize', default=None, metavar='geometry',
+                        help='Resize Images by geometry, see --help-geometry')
     parser.add_argument('--dumpkeys',action='store_true', dest='dumpkeys', default=False,
                         help='Dump all exif tag keys for first file and exit.')
     parser.add_argument('--help-geometry', action="store_true", dest="geohelp", default=False,
                         help='Show additional help on GEOMETRY and exit.')
     parser.add_argument('--help-format', action="store_true", dest="fmthelp", default=False,
                         help='Show help on formatting names for automatic renaming')
-    return parser
+    parser.add_argument('list', metavar='PATH', type=str, nargs='*',
+                        help='File(s) or sub-directories to process')
 
-
-if __name__ == '__main__':
-    globPat = '*.[Jj][Pp][Gg]'
-
-    parser = getparser()
     args = parser.parse_args()
 
     if args.dispversion:
@@ -439,7 +479,7 @@ if __name__ == '__main__':
 
     if args.resize:
         try:
-            geoSpec = checkGeometrySpec(args.resize)
+            geoSpec = checkGeometry(args.resize)
             if not geoSpec:
                 raise ValueError()
         except Exception as e:
@@ -448,6 +488,25 @@ if __name__ == '__main__':
 
         if not geoSpec:
             sys.exit(1)
+
+    thumbgeo = (96,96)
+    if args.genthumbs and args.thumbgeo:
+        try:
+            thumbgeo = checkGeometry(args.thumbgeo)
+            if not thumbgeo:
+                raise ValueError()
+        except Exception as e:
+            error("{} is an invalid geometry\n".format(args.resize))
+            error("Use --help-geometry for information on size geometry.")
+
+        if not thumbgeo:
+            sys.exit(1)
+
+    if args.thumbdir:
+        thumbdir = args.thumbdir
+    else:
+        thumbdir = None
+
     recurse = args.recurse
     rename = args.rename
     verbose = args.verbose 
@@ -477,7 +536,8 @@ if __name__ == '__main__':
                         error("--recurse not set. {} is a directory. Cannot process.".format(f))
             else:
                 if fnmatch.fnmatch(f,globPat):
-                    flist.append(f)
+                    if not f in flist:
+                        flist.append(f)
     
     if len(flist) < 1:
         error('Nothing to do.')
@@ -494,5 +554,7 @@ if __name__ == '__main__':
             if args.rotate:
                 exif.adjustOrientation()
             if args.resize:
-                exif.resize(geoSpec,args.resize)
-            setFileInfo(dir,fname,exif,rename)
+                exif.resize(geoSpec)
+            newname = setFileInfo(dir,fname,exif,rename)
+            if newname and args.genthumbs:
+                exif.genThumbFile(newname,thumbgeo,thumbdir)
