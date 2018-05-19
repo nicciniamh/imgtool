@@ -5,50 +5,71 @@
 Imgtool JPEG Photo tool
 
 Renames, reorients, resizes and/or timestamps jpg files with a unique name based on EXIF tags embedded in 
-the image files. File naming can be very complex using a variety of EXIF tags.
+the image files. File naming can be very complex using a variety of EXIF tags. When no options are specified, the tool will set the modification time of the image file to that of the EXIF DateTaken tag. In the absense of this tag the file is left untouched. 
 
 .SH WARNING
 This tool is ALPHA. I have tested it in a limited environment and was written to work with my photographs. It may even be destructive. Backing up data is always a good idea before employing automatic tools that can recurse directories. If you break something, you own the remaining pieces.
 
 .SH SYNOPSIS
-imgtool [-h] [-R] [-c] [-d] [-f FORMAT] [-p Pattern] [-r] [-z GEOMETRY] [--help-geometry] [-v] [-V] [--dumpkeys] [PATH [PATH ...]]
-.SH OPTIONS
-.IP -h|--help
-Show help text
-.IP --help-geometry
-Show help on resize geometry
-.IP --help-format
-Show help on automatic renaming format
-.IP -R|--recurse
-Recurse into subdirectories
-.IP -c|--camera-names
-Use embedded EXIF camera name to rename files
+imgtool [-h] [-R] [-c] [-D] [-f format] [-p pattern] [-r] [-z geometry] [--help-geometry] [-v] [-V] [--dumpkeys] [PATH [PATH ...]]
+
+.SH General Options
 .IP -d|--dry-run
 Show all actions to be performed without doing them. Also sets -v|--verbose
-.IP -f|--format 
-Time format string for filenaming in Python strftime format. Default is '@Exif.Image.Model[1]_%Y%m%d%H%M%S@File.ext'
 .IP -p|--patern
 Glob format pattern to search for files, e.g., *.jpg, default is *.[Jj][Pp][Gg]
 (see glob(3) and fnmatch(3))
-.IP -r|--auto-rotate
-Automatically rotate image(s) based on EXIF Orientation tag. If not present, or set to 1 no rotation is performed
-.IP -z|--resize 
-Resize image(s) based on geometry. 
+.IP -R|--recurse
+Recurse into subdirectories
 .IP -v|--verbose
 Set verbose mode: Show operations as they are performed. If -d|--dry-run is also set, operations are shown without actually doing them.
 .IP -V|--version
 Show program version and exit.
 .IP --dumpkeys
 Dump the EXIF Tag Keys from first found file and exit.
-.SH Resizing GEOMETRY
-GEOMETRY is used with the -z or --resize options are used.
 
+.SH Naming Options
+This tool can use the EXIF header data to create a name for the image based on various tags. A detailed description of formatting is below.
+
+.IP -c|--camera-names
+Use embedded EXIF camera name to rename files
+.IP -f|--format 
+Time format string for filenaming in Python strftime format. Default is '@Exif.Image.Model[1]_%Y%m%d%H%M%S@File.ext'
+
+.SH Transformation Options
+Images can be resized and rotated. Resizing is to be done based on the geometry specific and rotation is done based on the EXIF header's rotation tags to correct image orientation.
+
+.IP -r|--auto-rotate
+Automatically rotate image(s) based on EXIF Orientation tag. If not present, or set to 1 no rotation is performed
+.IP -z|--resize  geometry
+Resize image(s) based on geometry. 
+
+.SH Thumbnail Options
+Thumbnails can be generated for each image. They are stored as .PNG files where any rectangular image's padding is done as a transparent alpha channel. 
+
+.IP -t|--thumbnail
+Automatically generate PNG thumbnails for each image found. Default geometry is 96x96.
+.IP --thumb-dir
+Specify the output directory for thumbnails to be written
+.IP --thumb-geometry
+Specify geometry for the thumbnails created. Percentages can be used but are not recommende.
+
+.SH Help Options
+.IP -h|--help
+Show help text
+.IP --help-geometry
+Show help on resize geometry
+.IP --help-format
+Show help on automatic renaming format
+
+.SH Geometry Specifications
 Geometry can be specified as a percentage of the overall image or as a pair of [width]x[height]. 
 Width and height are specified in pixels. If width is specified but no height, e.g., 1000x
 the image will be reized to a width of 1000px with a height calculated in relation to width to
 maintain the image aspect ratio. Conversely, height is specified without a width, e.g., x1000
 will resize the image to 1000px high with a width calculated to maintain the aspect ratio. 
 When the width and height are spcecified no attempt to maintain the aspect ratio is made.
+
 .SH Format options for filenames
 
 Formatting filenames for automatic renaming is as follows:
