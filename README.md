@@ -7,14 +7,13 @@ In an effort to have unqique file names, I wrote this tool. I also added the fun
 A number of graphics tools will honor the Orientation tag in an image, however, on occasion, I find I need to manually rotate an image. More commonly, images get resized and renamed. Sometimes other tools are employed which modify the timestamp of the file, on the files system, which can disrupt sorting. (I use a date descending order in my file manager to show me the most recent photos) The default operation of imgtool is to set the timestamp of the files it finds with the date stamp in the photo's EXIF header. 
 
 ## To do list:
-    For --format: Add the ability to specify other EIXF or file variables. 
     Add a Rotate geometry that specifies a rotation for any image.
     Add an output file/folder name. 
 
 
 ## Usage
 
-`imgtool [-h] [-R] [-c] [-d] [-f FORMAT] [-p Pattern] [-r] [-z GEOMETRY] [--help-geometry] [-v] [-V] [--dumpkeys] [PATH [PATH ...]]`
+`imgtool [-h] [-R] [-c] [-D] [-f format] [-p pattern] [-r] [-z geometry] [--help-geometry] [-t|--thumnail] [--thumb-dir] [--thumb-geometry] [-v] [-V] [--dumpkeys] [PATH [PATH ...]]`
 
 ## Program Options  ##
 
@@ -34,6 +33,12 @@ A number of graphics tools will honor the Orientation tag in an image, however, 
 
 **-r|--auto-rotate** - *Automatically rotate image(s) based on EXIF Orientation tag. If not present, or set to 1 no rotation is performed*
 
+**-t|--thumnbail** - *Automaticall generate image thumbnails*
+
+**--thumb-dir** - *Specify thumbmail output directory*
+
+**--thumb-geometry** - *Specify thumbnail geometry as XXxYY or x%, the latter is not recommended.*
+
 **-z|--resize** - *Resize image(s) based on geometry. (See below)*
 
 **-v|--verbose** - *Set verbose mode: Show operations as they are performed. If -d|--dry-run is also set, operations are shown without actually doing them.*
@@ -43,7 +48,7 @@ A number of graphics tools will honor the Orientation tag in an image, however, 
 
 ## GEOMETRY
 
-When using the -z or --resize option, a geometry must be specified. Geometry can be specified as a percentage of the overall image or as a pair of width:height.  Width and height are specified in pixels. If width is specified but no height, e.g., 1000: the image will be reized to a width of 1000px with a height calculated in relation to width to maintain the image aspect ratio. Conversely, height is specified without a width, e.g., :1000 will resize the image to 1000px high with a width calculated to maintain the aspect ratio.  When the width and height are spcecified no attempt to maintain the aspect ratio is made.
+Geometry can be specified as a percentage of the overall image or as a pair of width:height.  Width and height are specified in pixels. If width is specified but no height, e.g., 1000: the image will be reized to a width of 1000px with a height calculated in relation to width to maintain the image aspect ratio. Conversely, height is specified without a width, e.g., :1000 will resize the image to 1000px high with a width calculated to maintain the aspect ratio.  When the width and height are spcecified no attempt to maintain the aspect ratio is made.
 
 ## Automatic Image Naming
 
@@ -84,7 +89,7 @@ length of the value, starting at the first number is presumed, so @Exif.Image.Ma
 with 'D3400'
 
 Any EXIF Tag present in the image EXIF header can be used to create all or part of a file name. For example, 
-@Image.Make[1]_@File.name@File.ext will create, from DSC_328.JPG a name of 'D3400_DSC_328.jpg'.`
+`@Image.Make[1]_@File.name@File.ext will create, from DSC_328.JPG a name of 'D3400_DSC_328.jpg'.`
 
 
 Note that the @File tags are never evaluated with a plus instead of an at-sign, and no indexing or substring
@@ -241,6 +246,15 @@ Time formatting, using the EIXF header's image time, is formatted with the follo
        where the effect of the O modifier is to use alternative numeric
        symbols (say, roman numerals), and that of the E modifier is to use a
        locale-dependent alternative representation.
+
+
+## Order of operations
+Each image processed, if the operations are specified, has their operations peformed in this order:
+1. Image resize
+2. Auto-rotation
+3. Dating and/or Renaming
+4. Thumbnail generation
+
 
 
 ## WARNING
