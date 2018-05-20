@@ -34,6 +34,8 @@ the format option. This would allow creation of a directory structure based on i
 
 **-f|--format** - *Time format string for filenaming in Python strftime format. Default is `@Exif.Image.Model[1]_%Y%m%d%H%M%S@File.ext`*
 
+**-i|--ignore-no-exif** - *Ignore that a file has no EXIF data. Default is to skip files without EXIF data.*
+
 **-n|--no-clobber** - *Do not overwrite files. Files will be named as "newname (n).ext" where n is a number indicating the number of files with the new name. Similar to other file renaming operations*
 
 **-p|--patern** - *Glob format pattern to search for files, e.g., *.jpg, default is *.[Jj][Pp][Gg] (see glob(3) and fnmatch(3))*
@@ -262,6 +264,11 @@ Each image processed, if the operations are specified, has their operations pefo
 3. Dating and/or Renaming
 4. Thumbnail generation
 
+
+## Some tips
+1. Always backup data!
+2. Before emplyoing this tool on a number of photos, be sure it will do what you want it to do using the -D or --dry-run option. This will tell you most of what operations are being done without actually doing them.
+3. When using EXIF tags for renaming files from multiple camera make/models, do not use vendor specific tags, e.g. Exif.NikonFi.FileNumber as these may not be consistent across those cameras even for the same manufacturer. 
 
 
 ## WARNING

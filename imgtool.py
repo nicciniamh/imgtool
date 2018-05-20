@@ -3,7 +3,7 @@ import os, sys, datetime, time, fnmatch, glob2, re, pyexiv2, shutil
 from PIL import Image
 from PIL import ExifTags
 from argparse import ArgumentParser
-toolversion = '0.1.6'
+toolversion = '0.1.7'
 
 description = """
 Imgtool version {} - Copyright 2018 Nicole Stevens - Image manipulation tool:  
@@ -134,13 +134,18 @@ debug = logger.debugout
 
 class fileExif:
     """ Read file exif data and process tags """
-    def __init__(self,file,timeformat = defaultTimeFormat):
+    def __init__(self,file,timeformat = defaultTimeFormat,**kwargs):
+        if 'required_tag' in kwargs:
+            self.required = kwargs['required_tag']
+        else:
+            self.required = None
         self._renospc = '(\@[A-Za-z\.0-9]*[\(\)\[\]\,0-9]*)'
         self._renoxlt = self._renospc.replace('@','+')
 
         self.timeformat = timeformat
         try:
             self.mtime = os.stat(file).st_mtime
+            self.fileDate = self.mtime
         except Exception as e:
             error("Cannot stat {}: {}".format(file,e))
             raise e
@@ -149,9 +154,18 @@ class fileExif:
         try:
             e = pyexiv2.ImageMetadata(self.file)
             e.read()
-            self.exif = e
+            if len(e.keys()) == 0:
+                e = None
+            if self.required:
+                if not self.required in e.keys():
+                    e = None
+            if e:
+                dt = e['Exif.Image.DateTime'].value
+                dt = time.mktime(dt.timetuple())
+                if dt > 0:
+                    self.fileDate = int(dt)
+
         except Exception as e:
-            debug('{} Cannot get exif data {}'.format(self.file,e))
             e = None
         self.exif = e
         self.fileInfo = {'File.Name': os.path.splitext(os.path.basename(self.file))[0],
@@ -161,7 +175,7 @@ class fileExif:
                          'File.mtime': time.strftime('%Y%m%d%H%M%S',time.localtime(self.mtime))
                     }
     def dumpkeys(self):
-        for k in self.exif.exif_keys:
+        for k in self.exif.keys():
             logger('KEYDUMP',k)
 
     def fileTag(self,tag):
@@ -344,23 +358,10 @@ class fileExif:
         return self._extractExif2(match).replace(' ','.')
 
     def formatStringExif(self,s):
-        s = time.strftime(s,time.localtime(self.fileDate()))
+        s = time.strftime(s,time.localtime(self.fileDate))
         s = re.sub(self._renospc,self._extractExif1, s)
         s =re.sub(self._renoxlt,self._extractExif2,s)
         return s
-
-    def fileDate(self):
-        """ get a EPOCH time value from exif data """
-        try:
-            dt = self.exif['Exif.Image.DateTime'].value
-            dt = time.mktime(dt.timetuple())
-            if dt > 0:
-                return int(dt)
-            else:
-                return self.mtime
-        except Exception as e:
-            debug('Cannot get exif date time {}'.format(e))
-            return self.mtime
 
     def exifNameForFile(self):
         """ get a new file name for loaded image based on the camera make and model. 
@@ -370,12 +371,12 @@ class fileExif:
         file = self.formatStringExif(self.timeformat)
         file = re.sub(r'^_','',file)
 
-        return os.path.join(path,file),self.fileDate()
+        return os.path.join(path,file),self.fileDate
 
 def setFileInfo(path,fname,exif,rename,outdir=None,noclobber=False):
     info = ''
     fname = os.path.join(path,fname)
-    tstamp = exif.fileDate()
+    tstamp = exif.fileDate
     newname = False
     if rename:
         newname,tstamp = exif.exifNameForFile()
@@ -395,7 +396,7 @@ def setFileInfo(path,fname,exif,rename,outdir=None,noclobber=False):
                 info = info + 'new name: {} '.format(newname)
                 if not dry:
                     try:
-                        newname = docopy(fname,newname,noclobber)
+                        newname = docopy(fname,newname,noclobber,exif.fileDate)
                     except Exception as e:
                         error("Error renaming file {} to {}: {}".format(fname,newname,e))
                         raise e
@@ -417,7 +418,7 @@ def setFileInfo(path,fname,exif,rename,outdir=None,noclobber=False):
     else:
         return fname
 
-def docopy(src,dst,noclobber=False):
+def docopy(src,dst,noclobber=False,ftime=None):
     newdir = os.path.dirname(dst)
     [dbase,ext] = os.path.splitext(dst)
     fn = 1
@@ -433,6 +434,10 @@ def docopy(src,dst,noclobber=False):
     shutil.copy2(src,dst)
     if os.path.exists(dst):
         os.unlink(src)
+        if ftime:
+            os.utime(dst,(ftime,ftime))
+        else:
+            debug('No timestamp for {}'.format(src))
     else:
         raise RuntimeError('Destination, {}, does not seem to exist, not removing source. {}',dst,src)
     return dst
@@ -485,10 +490,14 @@ if __name__ == '__main__':
                         help='When renaming, files are moved or copied to the destination directoy maintain their directory tree when recursive. Formatting of ExifTags is allowed. See --help-format')
     parser.add_argument('-f', '--format', action='store', dest='timeformat', default=defaultTimeFormat,
                         metavar='format-string',help=timeformatHelp)
+    parser.add_argument('-i','--ignore-no-exif', action='store_true', dest='ignore', default=False,
+                        help='Ignore that a file has no EXIF data. Default is to skip files without EXIF data.')
     parser.add_argument('-n', '--no-clobber', action='store_true', dest='noclobber', default=False,
                         help='Do not overwrite existing files. Files will be named as "newname (n).ext" where n is a number indicating the number of files with the new name. Similar to other file renaming operations')
     parser.add_argument('-p', '--pattern', action='store', dest='pat', default=None,
                         metavar='Pattern',help='Pattern, e.g, *.jpg, to match')
+    parser.add_argument('-q','--required-tag', type=str, default=None, dest='required_tag', action='store',
+                        help='Tag required to be present for EXIF to be considered valid')
     parser.add_argument('-r', '--auto-rotate', action="store_true", dest="rotate", default=False,
                         help="Automatically rotate images.")
     parser.add_argument('-t', '--thumbnail', action='store_true', dest='genthumbs', default=False, 
@@ -601,11 +610,19 @@ if __name__ == '__main__':
         if not os.path.isdir(file):
             dir = os.path.dirname(file)
             fname = os.path.basename(file) 
-            exif = fileExif(file,args.timeformat)
+            exif = fileExif(file,args.timeformat,required_tag=args.required_tag)
+            if not args.ignore and not exif.exif:
+                if verbose:
+                    logger('INFO','Skipping file {}, no EXIF data'.format(file))
+                continue
             if args.resize:
                 exif.resize(geoSpec)
             if args.rotate:
                 exif.adjustOrientation()
             newname = setFileInfo(dir,fname,exif,rename,args.outdir,args.noclobber)
-            if newname and args.genthumbs:
-                exif.genThumbFile(newname,thumbgeo,thumbdir)
+            if args.genthumbs:
+                if newname:
+                    exif.genThumbFile(newname,thumbgeo,thumbdir)
+                else:
+                    exif.genThumbFile(file, thumbgeo, thumbdir)
+ 
