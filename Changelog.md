@@ -5,6 +5,12 @@
 
 ### Other
 
+* Added formatting options for output directory names. Updated man page and readme to reflect those changes. [Nicole Stevens]
+
+* Updated readme to show --directory and --no-clobber options. [Nicole Stevens]
+
+* Updated Changelog. [Nicole Stevens]
+
 * Updated version number. [Nicole Stevens]
 
 * Added a readable changelog. [Nicole Stevens]
