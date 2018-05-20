@@ -147,7 +147,8 @@ Any EXIF Tag present in the image EXIF header can be used to create all or part 
 Note that the @File tags are never evaluated with a plus instead of an at-sign, and no indexing or substring
 operations are performed.
 
-Time formatting, using the EIXF header's image time, is formatted using strftime(3) format, or with the following formatting:
+Time formatting, using the EIXF header's image time, is formatted using strftime(3) format, or with the following formatting keys:
+
        %a     The abbreviated name of the day of the week according to the
               current locale.  (Calculated from tm_wday.)
 
