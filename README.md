@@ -24,9 +24,13 @@ A number of graphics tools will honor the Orientation tag in an image, however, 
 
 **-c|--camera-names** - *Use embedded EXIF camera name to rename files.*
 
+**-d|--directory** - *Specify output directory*
+
 **-D|--dry-run** - *Show all actions to be performed without doing them. Also sets* **-v|--verbose**
 
 **-f|--format** - *Time format string for filenaming in Python strftime format. Default is `@Exif.Image.Model[1]_%Y%m%d%H%M%S@File.ext`*
+
+**-n|--no-clobber** - *Do not overwrite files*
 
 **-p|--patern** - *Glob format pattern to search for files, e.g., *.jpg, default is *.[Jj][Pp][Gg] (see glob(3) and fnmatch(3))*
 
