@@ -10,6 +10,23 @@ Files can be moved (or copied if to a different device) to another directory. Th
 the format option. This would allow creation of a directory structure based on image data. E.g.,
   `~/Photos/%Y-%m-%d .` will create a tree of directories based on the EXIF (or file) Date/Time. Any subdirectory trees are maintaine. 
 
+## Table of Contents
+- [Usage](#Usage)
+        - [Program Options  ](#Program-Options--)
+- [GEOMETRY](#GEOMETRY)
+- [Automatic Image Naming](#Automatic-Image-Naming)
+    - [Splitting strings in tags](#Splitting-strings-in-tags)
+        - [Indexing](#Indexing)
+        - [Substrings](#Substrings)
+- [Order of operations](#Order-of-operations)
+- [Some tips](#Some-tips)
+- [WARNING](#WARNING)
+- [Author](#Author)
+- [Copyright](#Copyright)
+- [License](#License)
+- [Installation](#Installation)
+
+
 ## Usage
 
 `imgtool [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory]
@@ -297,7 +314,7 @@ a copy of the License at
 
     http://www.apache.org/licenses/LICENSE-2.0
 
-# Installation
+## Installation
 
 To run the installer script, run bash install.sh 
 
