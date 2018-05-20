@@ -1,5 +1,7 @@
 # Imgtool JPEG Photo tool
 
+
+## Background
 I have a fairly large collection of digital photos I have taken with my phone and three different Nikon cameras. 
 
 In an effort to have unqique file names, I wrote this tool. I also added the functionality of a couple other operations I frequently do in post-processing.
@@ -9,6 +11,9 @@ A number of graphics tools will honor the Orientation tag in an image, however, 
 Files can be moved (or copied if to a different device) to another directory. The naming can have embedded exif data just like
 the format option. This would allow creation of a directory structure based on image data. E.g.,
   `~/Photos/%Y-%m-%d .` will create a tree of directories based on the EXIF (or file) Date/Time. Any subdirectory trees are maintaine. 
+
+## Digital Photography Images
+Files created by digital photography have a header built-in called *Exhangeabe Image Format* or [EXIF](https://en.wikipedia.org/wiki/Exif) header. There is a lot of information that can be in this header that relates to the photograph, when it was taken, sometimes where it was taken, camera settings, camera model, etc. This tool extracts this information and uses it to create unique names for photography files, rotate them, etc.
 
 ## Table of Contents
 - [Usage](#usage)
