@@ -6,6 +6,10 @@ In an effort to have unqique file names, I wrote this tool. I also added the fun
 
 A number of graphics tools will honor the Orientation tag in an image, however, on occasion, I find I need to manually rotate an image. More commonly, images get resized and renamed. Sometimes other tools are employed which modify the timestamp of the file, on the files system, which can disrupt sorting. (I use a date descending order in my file manager to show me the most recent photos) The default operation of imgtool is to set the timestamp of the files it finds with the date stamp in the photo's EXIF header. 
 
+Files can be moved (or copied if to a different device) to another directory. The naming can have embedded exif data just like
+the format option. This would allow creation of a directory structure based on image data. E.g.,
+  `~/Photos/%Y-%m-%d .` will create a tree of directories based on the EXIF (or file) Date/Time. Any subdirectory trees are maintaine.
+
 ## To do list:
     Add a Rotate geometry that specifies a rotation for any image.
 
@@ -24,7 +28,7 @@ A number of graphics tools will honor the Orientation tag in an image, however, 
 
 **-c|--camera-names** - *Use embedded EXIF camera name to rename files.*
 
-**-d|--directory** - *Specify output directory*
+**-d|--directory** - *Specify output directory. Formatting with exif tags is allowed. See formatting below.*
 
 **-D|--dry-run** - *Show all actions to be performed without doing them. Also sets* **-v|--verbose**
 

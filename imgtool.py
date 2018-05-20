@@ -379,6 +379,7 @@ def setFileInfo(path,fname,exif,rename,outdir=None,noclobber=False):
         if not newname == fname:
             if rename:
                 if outdir:
+                    outdir = exif.formatStringExif(os.path.expanduser(outdir))
                     outdir = list(os.path.split(outdir))
                     newname = list(os.path.split(newname))
                     if newname[0].startswith('./'):
@@ -474,7 +475,7 @@ if __name__ == '__main__':
     parser.add_argument("-D", "--dry_run",action="store_true", dest="dry", default=False,
                         help="Dry run: show what will be done without actually doing it. (sets verbose too.)")
     parser.add_argument('-d', '--output-directory', dest='outdir', action='store', type=str, default=None, metavar='directory',
-                        help='When renaming, place the files with the base directory specified.')
+                        help='When renaming, files are moved or copied to the destination directoy maintain their directory tree when recursive. Formatting of ExifTags is allowed. See --help-format')
     parser.add_argument('-f', '--format', action='store', dest='timeformat', default=defaultTimeFormat,
                         metavar='format-string',help=timeformatHelp)
     parser.add_argument('-n', '--no-clobber', action='store_true', dest='noclobber', default=False,
