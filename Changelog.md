@@ -5,6 +5,14 @@
 
 ### Other
 
+* Added -a|--rot-angle to allow for manual specification of image rotation. Updated manpage and readme. [Nicole Stevens]
+
+* Added support for eiftags in directory names, updated docs, fixed a few minor bugs. [Nicole Stevens]
+
+* Fixed docopy to create sequential files with unique names when --no-clobber is set. [Nicole Stevens]
+
+* Updated change log. [Nicole Stevens]
+
 * Added formatting options for output directory names. Updated man page and readme to reflect those changes. [Nicole Stevens]
 
 * Updated readme to show --directory and --no-clobber options. [Nicole Stevens]
