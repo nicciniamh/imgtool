@@ -3,7 +3,7 @@ import os, sys, datetime, time, fnmatch, glob2, re, pyexiv2, shutil
 from PIL import Image
 from PIL import ExifTags
 from argparse import ArgumentParser
-toolversion = '0.3'
+toolversion = '0.1.5'
 
 description = """
 Imgtool version {} - Copyright 2018 Nicole Stevens - Image manipulation tool:  
