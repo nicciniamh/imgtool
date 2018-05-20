@@ -5,6 +5,12 @@
 
 ### Other
 
+* Updated Readme. [Nicole Stevens]
+
+* Edit to have TOC in readme. [Nicole Stevens]
+
+* Updated automatically generated changelog. [Nicole Stevens]
+
 * Added -a|--rot-angle to allow for manual specification of image rotation. Updated manpage and readme. [Nicole Stevens]
 
 * Added support for eiftags in directory names, updated docs, fixed a few minor bugs. [Nicole Stevens]
