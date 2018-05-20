@@ -12,14 +12,14 @@ the format option. This would allow creation of a directory structure based on i
 
 ## Table of Contents
 - [Usage](#usage)
-- [GEOMETRY](#geometry)
 - [Automatic Image Naming](#automatic-image-naming)
     - [Splitting strings in tags](#splitting-strings-in-tags)
         - [Indexing](#indexing)
         - [Substrings](#substrings)
+- [Geometry](#geometry)
 - [Order of operations](#order-of-operations)
 - [Some tips](#some-tips)
-- [WARNING](#warning)
+- [A Strong Warning](#warning)
 - [Author](#author)
 - [Copyright](#copyright)
 - [License](#license)
@@ -72,7 +72,7 @@ the format option. This would allow creation of a directory structure based on i
 **-V|--version** - *Show program version and exit.*
 **--dumpkeys** - Dump EXIF tag keys for first found file and exit. May be used to help with formatting.
 
-## GEOMETRY
+## Geometry
 
 Geometry can be specified as a percentage of the overall image or as a pair of width:height.  Width and height are specified in pixels. If width is specified but no height, e.g., 1000: the image will be reized to a width of 1000px with a height calculated in relation to width to maintain the image aspect ratio. Conversely, height is specified without a width, e.g., :1000 will resize the image to 1000px high with a width calculated to maintain the aspect ratio.  When the width and height are spcecified no attempt to maintain the aspect ratio is made.
 
