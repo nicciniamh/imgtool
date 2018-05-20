@@ -5,6 +5,10 @@
 
 ### Other
 
+* Updated version number. [Nicole Stevens]
+
+* Added a readable changelog. [Nicole Stevens]
+
 * Added --output-directory|-d option to put files in new destination directory, added --no-clobber|-n to prevent overwriting existing files. [Nicole Stevens]
 
 * Updated README to cover thumbnailing. [Nicole Stevens]
