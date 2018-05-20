@@ -12,7 +12,6 @@ the format option. This would allow creation of a directory structure based on i
 
 ## Table of Contents
 - [Usage](#usage)
-        - [Program Options  ](#program-options--)
 - [GEOMETRY](#geometry)
 - [Automatic Image Naming](#automatic-image-naming)
     - [Splitting strings in tags](#splitting-strings-in-tags)
