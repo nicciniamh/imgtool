@@ -147,7 +147,7 @@ Any EXIF Tag present in the image EXIF header can be used to create all or part 
 Note that the @File tags are never evaluated with a plus instead of an at-sign, and no indexing or substring
 operations are performed.
 
-Time formatting, using the EIXF header's image time, is formatted with the following formatting:
+Time formatting, using the EIXF header's image time, is formatted using strftime(3) format, or with the following formatting:
        %a     The abbreviated name of the day of the week according to the
               current locale.  (Calculated from tm_wday.)
 
@@ -298,6 +298,8 @@ Time formatting, using the EIXF header's image time, is formatted with the follo
        where the effect of the O modifier is to use alternative numeric
        symbols (say, roman numerals), and that of the E modifier is to use a
        locale-dependent alternative representation.
+
+(Taken from Linux strftime(3) manual page, from the [Linux Man Pages Project](http://www.kernel.org/doc/man-pages))
 
 
 ## Order of operations
