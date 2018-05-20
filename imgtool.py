@@ -183,26 +183,39 @@ class fileExif:
             return self.fileInfo[tag]
         return ''
 
-    def adjustOrientation(self):
-        degrees = {3: 180, 6: 270, 8: 90}
-        if self.exif is None:
-            if verbose:
-                logger('INFO','Not rotating image {}: No EXIF data.'.format(self.file))
-            return
-        try:
-            if self.exif['Exif.Image.Orientation'].value in degrees:
-                image = Image.open(self.file)
+    def adjustOrientation(self,**kwargs):
+        rot = None
+        if 'angle' in kwargs:
+            rot = kwargs['angle']
+        if not rot:
+            degrees = {3: 180, 6: 270, 8: 90}
+            if self.exif is None:
+                if verbose:
+                    logger('INFO','Not rotating image {}: No EXIF data.'.format(self.file))
+                return
+
+            try:
+                if self.exif['Exif.Image.Orientation'].value in degrees:
+                    image = Image.open(self.file)
+                else:
+                    if verbose:
+                        logger('INFO','Not rotating image, {}, Cannot make sense of EXIF Data.'.format(self.file,self.exif['Exif.Image.Orientation'].value))
                 rot = degrees[self.exif['Exif.Image.Orientation'].value]
-                if verbose:
-                    logger('INFO','Rotate image {} by {} degrees'.format(self.file,rot))
-                if not dry:
-                    image=image.rotate(rot, expand=True)
-                    image.save(self.file)
-                    self.exif['Exif.Image.Orientation'].value = 1
-                    self.exif.write()
-            else:
-                if verbose:
-                    logger('INFO','Not rotating image, {}, either {} is not in list or does not need rotation.'.format(self.file,self.exif['Exif.Image.Orientation'].value))
+
+            except Exception as e:
+                raise IOError('Cannot rotate image {}: {}'.format(self.file,e))
+        try:
+            if not rot:
+                logger('INFO','Cannot get rotation angle.')
+                return
+
+            if verbose:
+                logger('INFO','Rotate image {} by {} degrees'.format(self.file,rot))
+            if not dry:
+                image=image.rotate(rot, expand=True)
+                image.save(self.file)
+                self.exif['Exif.Image.Orientation'].value = 1
+                self.exif.write()
         except Exception as e:
             raise IOError('Cannot rotate image {}: {}'.format(self.file,e))
 
@@ -479,7 +492,8 @@ if __name__ == '__main__':
 
     cwd = os.getcwd()
     parser = ArgumentParser(description=description, epilog=progwarning)
-
+    parser.add_argument("-a", "--rotation-angle", dest="rotangle", type=int, default=None, action='store',
+                        help='Specify angle for rotating images. Ignores EXIF data.')
     parser.add_argument("-R", "--recurse", dest="recurse", default = False, action='store_true',
                         help="Recurse into sub-directories")
     parser.add_argument("-c", "--camera-names",action="store_true", dest="rename", default=False,
@@ -618,7 +632,7 @@ if __name__ == '__main__':
             if args.resize:
                 exif.resize(geoSpec)
             if args.rotate:
-                exif.adjustOrientation()
+                exif.adjustOrientation(angle=args.rotangle)
             newname = setFileInfo(dir,fname,exif,rename,args.outdir,args.noclobber)
             if args.genthumbs:
                 if newname:

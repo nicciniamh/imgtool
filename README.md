@@ -10,16 +10,18 @@ Files can be moved (or copied if to a different device) to another directory. Th
 the format option. This would allow creation of a directory structure based on image data. E.g.,
   `~/Photos/%Y-%m-%d .` will create a tree of directories based on the EXIF (or file) Date/Time. Any subdirectory trees are maintaine. 
 
-## To do list:
-    Add a Rotate geometry that specifies a rotation for any image.
-
-
 ## Usage
 
-`imgtool [-h] [-R] [-c] [-D] [-f format] [-p pattern] [-r] [-z geometry] [--help-geometry] [-t|--thumnail] [--thumb-dir] [--thumb-geometry] [-v] [-V] [--dumpkeys] [PATH [PATH ...]]`
+`imgtool [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory]
+                  [-f format-string] [-i] [-n] [-p Pattern] [-q REQUIRED_TAG]
+                  [-r] [-t] [--thumb-dir directory]
+                  [--thumb-geometry geometry] [-v] [-V] [-z geometry]
+                  [--debug] [--dumpkeys] [--help-geometry] [--help-format]
+                  [PATH [PATH ...]]
+`
 
 ## Program Options  ##
-
+**-a|--rot-angle** - *Specify angle for rotation and override EXIF data.*
 **-h|--help** - *Show help text*
 
 **--help-geometry** - *Show help on resize geometry*

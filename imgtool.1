@@ -11,13 +11,24 @@ the image files. File naming can be very complex using a variety of EXIF tags. W
 This tool is ALPHA. I have tested it in a limited environment and was written to work with my photographs. It may even be destructive. Backing up data is always a good idea before employing automatic tools that can recurse directories. If you break something, you own the remaining pieces.
 
 .SH SYNOPSIS
-imgtool [-h] [-R] [-c] [-d directory] [-D] [-f format] [-n] [-p pattern] [-r] [-z geometry] [--help-geometry] [-v] [-V] [--dumpkeys] [PATH [PATH ...]]
+imgtool [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory]
+                  [-f format-string] [-i] [-n] [-p Pattern] [-q REQUIRED_TAG]
+                  [-r] [-t] [--thumb-dir directory]
+                  [--thumb-geometry geometry] [-v] [-V] [-z geometry]
+                  [--debug] [--dumpkeys] [--help-geometry] [--help-format]
+                  [PATH [PATH ...]]
+
+
+
+ [-h] [-R] [-c] [-d directory] [-D] [-f format] [-n] [-p pattern] [-r] [-z geometry] [--help-geometry] [-v] [-V] [--dumpkeys] [PATH [PATH ...]]
 
 .SH General Options
 .IP -d|--directory
 When renaming, files are moved or copied to the destination directoy maintain their directory tree when recursive. Formatting of ExifTags is allowed. See formatting below. 
 .IP -D|--dry-run
 Show all actions to be performed without doing them. Also sets -v|--verbose
+.IP -i|--ignore-no-exif
+Ignore that a file has no EXIF data. Default is to skip files without EXIF data.
 .IP -n|--no-clobber
 Do not destroy existing destination file. Files will be named as "newname (n).ext" where n is a number indicating the number of files with the new name. Similar to other file renaming operations
 .IP -p|--patern
@@ -43,6 +54,8 @@ Time format string for filenaming in Python strftime format. Default is '@Exif.I
 .SH Transformation Options
 Images can be resized and rotated. Resizing is to be done based on the geometry specific and rotation is done based on the EXIF header's rotation tags to correct image orientation.
 
+.IP -a|--rotation-angle
+Specify the rotation angle, in degrees to reorient images.
 .IP -r|--auto-rotate
 Automatically rotate image(s) based on EXIF Orientation tag. If not present, or set to 1 no rotation is performed
 .IP -z|--resize  geometry
