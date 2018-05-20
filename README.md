@@ -8,7 +8,6 @@ A number of graphics tools will honor the Orientation tag in an image, however, 
 
 ## To do list:
     Add a Rotate geometry that specifies a rotation for any image.
-    Add an output file/folder name. 
 
 
 ## Usage

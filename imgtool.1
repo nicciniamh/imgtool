@@ -11,11 +11,15 @@ the image files. File naming can be very complex using a variety of EXIF tags. W
 This tool is ALPHA. I have tested it in a limited environment and was written to work with my photographs. It may even be destructive. Backing up data is always a good idea before employing automatic tools that can recurse directories. If you break something, you own the remaining pieces.
 
 .SH SYNOPSIS
-imgtool [-h] [-R] [-c] [-D] [-f format] [-p pattern] [-r] [-z geometry] [--help-geometry] [-v] [-V] [--dumpkeys] [PATH [PATH ...]]
+imgtool [-h] [-R] [-c] [-d directory] [-D] [-f format] [-n] [-p pattern] [-r] [-z geometry] [--help-geometry] [-v] [-V] [--dumpkeys] [PATH [PATH ...]]
 
 .SH General Options
-.IP -d|--dry-run
+.IP -d|--directory
+When renaming, files are moved or copied to the destination directoy maintain their directory tree when recursive. 
+.IP -D|--dry-run
 Show all actions to be performed without doing them. Also sets -v|--verbose
+.IP -n|--no-clobber
+Do not destroy existing destination file. 
 .IP -p|--patern
 Glob format pattern to search for files, e.g., *.jpg, default is *.[Jj][Pp][Gg]
 (see glob(3) and fnmatch(3))
