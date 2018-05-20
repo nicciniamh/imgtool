@@ -3,7 +3,7 @@ import os, sys, datetime, time, fnmatch, glob2, re, pyexiv2, shutil
 from PIL import Image
 from PIL import ExifTags
 from argparse import ArgumentParser
-toolversion = '0.1.5'
+toolversion = '0.1.6'
 
 description = """
 Imgtool version {} - Copyright 2018 Nicole Stevens - Image manipulation tool:  
@@ -354,7 +354,10 @@ class fileExif:
         try:
             dt = self.exif['Exif.Image.DateTime'].value
             dt = time.mktime(dt.timetuple())
-            return int(dt)
+            if dt > 0:
+                return int(dt)
+            else:
+                return self.mtime
         except Exception as e:
             debug('Cannot get exif date time {}'.format(e))
             return self.mtime
@@ -392,7 +395,7 @@ def setFileInfo(path,fname,exif,rename,outdir=None,noclobber=False):
                 info = info + 'new name: {} '.format(newname)
                 if not dry:
                     try:
-                        docopy(fname,newname,noclobber)
+                        newname = docopy(fname,newname,noclobber)
                     except Exception as e:
                         error("Error renaming file {} to {}: {}".format(fname,newname,e))
                         raise e
@@ -416,8 +419,12 @@ def setFileInfo(path,fname,exif,rename,outdir=None,noclobber=False):
 
 def docopy(src,dst,noclobber=False):
     newdir = os.path.dirname(dst)
-    if os.path.exists(dst) and noclobber:
-        raise RuntimeError('No-clobber is set, will not replace existing {}'.format(dst))
+    [dbase,ext] = os.path.splitext(dst)
+    fn = 1
+    while noclobber and os.path.exists(dst):
+        dst = '{} ({}){}'.format(dbase,fn,ext)
+        fn = fn + 1 
+        debug('Attempting unique name {}'.format(dst))
 
     if not os.path.exists(newdir):
         os.makedirs(newdir)
@@ -428,7 +435,7 @@ def docopy(src,dst,noclobber=False):
         os.unlink(src)
     else:
         raise RuntimeError('Destination, {}, does not seem to exist, not removing source. {}',dst,src)
-
+    return dst
 
 def getFileList(dir,recurse,pat):
     flist = []
@@ -479,7 +486,7 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--format', action='store', dest='timeformat', default=defaultTimeFormat,
                         metavar='format-string',help=timeformatHelp)
     parser.add_argument('-n', '--no-clobber', action='store_true', dest='noclobber', default=False,
-                        help='Do not overwrite existing files.')
+                        help='Do not overwrite existing files. Files will be named as "newname (n).ext" where n is a number indicating the number of files with the new name. Similar to other file renaming operations')
     parser.add_argument('-p', '--pattern', action='store', dest='pat', default=None,
                         metavar='Pattern',help='Pattern, e.g, *.jpg, to match')
     parser.add_argument('-r', '--auto-rotate', action="store_true", dest="rotate", default=False,

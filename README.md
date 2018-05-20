@@ -8,7 +8,7 @@ A number of graphics tools will honor the Orientation tag in an image, however, 
 
 Files can be moved (or copied if to a different device) to another directory. The naming can have embedded exif data just like
 the format option. This would allow creation of a directory structure based on image data. E.g.,
-  `~/Photos/%Y-%m-%d .` will create a tree of directories based on the EXIF (or file) Date/Time. Any subdirectory trees are maintaine.
+  `~/Photos/%Y-%m-%d .` will create a tree of directories based on the EXIF (or file) Date/Time. Any subdirectory trees are maintaine. 
 
 ## To do list:
     Add a Rotate geometry that specifies a rotation for any image.
@@ -34,7 +34,7 @@ the format option. This would allow creation of a directory structure based on i
 
 **-f|--format** - *Time format string for filenaming in Python strftime format. Default is `@Exif.Image.Model[1]_%Y%m%d%H%M%S@File.ext`*
 
-**-n|--no-clobber** - *Do not overwrite files*
+**-n|--no-clobber** - *Do not overwrite files. Files will be named as "newname (n).ext" where n is a number indicating the number of files with the new name. Similar to other file renaming operations*
 
 **-p|--patern** - *Glob format pattern to search for files, e.g., *.jpg, default is *.[Jj][Pp][Gg] (see glob(3) and fnmatch(3))*
 
