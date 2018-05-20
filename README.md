@@ -12,29 +12,31 @@ the format option. This would allow creation of a directory structure based on i
 
 ## Table of Contents
 - [Usage](#usage)
-    - [-a|--rot-angle](#-a\|--rot-angle)
-    - [-h|--help](#-h\|--help)
+    - [-a|--rot-angle](#--rot-angle)
+    - [-h|--help](#--help)
     - [--help-geometry](#--help-geometry)
-    - [-R|--recurse](#-r\|--recurse)
-    - [-c|--camera-names](#-c\|--camera-names)
-    - [-d|--directory](#-d\|--directory)
-    - [-D|--dry-run](#-d\|--dry-run)
-    - [-f|--format](#-f\|--format)
-    - [-i|--ignore-no-exif](#-i\|--ignore-no-exif)
-    - [-n|--no-clobber](#-n\|--no-clobber)
-    - [-q|--required-tag](#-q|--required-tag)
-    - [-p|--patern](#-p\|--patern)
-    - [-r|--auto-rotate](#-r\|--auto-rotate)
-    - [-t|--thumnbail](#-t\|--thumnbail)
+    - [-R|--recurse](#--recurse)
+    - [-c|--camera-names](#--camera-names)
+    - [-d|--directory](#--directory)
+    - [-D|--dry-run](#--dry-run)
+    - [-f|--format](#--format)
+    - [-i|--ignore-no-exif](#--ignore-no-exif)
+    - [-n|--no-clobber](#--no-clobber)
+    - [-q|--required-tag](#--required-tag)
+    - [-p|--patern](#--patern)
+    - [-r|--auto-rotate](#--auto-rotate)
+    - [-t|--thumnbail](#--thumnbail)
     - [--thumb-dir](#--thumb-dir)
     - [--thumb-geometry](#--thumb-geometry)
-    - [-z|--resize](#-z\|--resize)
-    - [-v|--verbose](#-v\|--verbose)
-    - [-V|--version](#-v\|--version)
-    - [--dumpkeys](#--dumpkeys)- [Automatic Image Naming](#automatic-image-naming)
-    - [Splitting strings in tags](#splitting-strings-in-tags)
-        - [Indexing](#indexing)
-        - [Substrings](#substrings)
+    - [-z|--resize](#--resize)
+    - [-v|--verbose](#--verbose)
+    - [-V|--version](#--version)
+    - [--dumpkeys](#--dumpkeys)
+
+- [Automatic Image Naming](#automatic-image-naming)
+- [Splitting strings in tags](#splitting-strings-in-tags)
+      - [Indexing](#indexing)
+      - [Substrings](#substrings)
 - [Geometry](#geometry)
 - [Order of operations](#order-of-operations)
 - [Some tips](#some-tips)
@@ -53,43 +55,43 @@ the format option. This would allow creation of a directory structure based on i
                   [--debug] [--dumpkeys] [--help-geometry] [--help-format]
                   [PATH [PATH ...]]
 `
-### -a|--rot-angle
+### --rot-angle
 Specify angle for rotation and override EXIF data.
-### -h|--help
+### --help
 Show help text
 ### --help-geometry
 Show help on resize geometry
-### -R|--recurse
+### --recurse
 Recurse into subdirectories
-### -c|--camera-names
+### --camera-names
 Use embedded EXIF camera name to rename files.
-### -d|--directory
+### --directory
 Specify output directory. Formatting with exif tags is allowed. See formatting below.
-### -D|--dry-run
+### --dry-run
 Show all actions to be performed without doing them. Also sets -v|--verbose
-### -f|--format
+### --format
 Time format string for filenaming in Python strftime format. Default is `@Exif.Image.Model[1]_%Y%m%d%H%M%S@File.ext`
-### -i|--ignore-no-exif
+### --ignore-no-exif
 Ignore that a file has no EXIF data. Default is to skip files without EXIF data.
-### -n|--no-clobber
+### --no-clobber
 Do not overwrite files. Files will be named as "newname (n).ext" where n is a number indicating the number of files with the new name. Similar to other file renaming operations
-### -q|--required-tag
+### --required-tag
 Require specific EXIF tag to be in the header for processing.
-### -p|--patern
+### --patern
 Glob format pattern to search for files, e.g., .jpg, default is .[Jj][Pp][Gg] (see glob(3) and fnmatch(3))
-### -r|--auto-rotate
+### --auto-rotate
 Automatically rotate image(s) based on EXIF Orientation tag. If not present, or set to 1 no rotation is performed
-### -t|--thumnbail
+### --thumnbail
 Automaticall generate image thumbnails
 ### --thumb-dir
 Specify thumbmail output directory
 ### --thumb-geometry
 Specify thumbnail geometry as XXxYY or x%, the latter is not recommended.
-### -z|--resize
+### --resize
 Resize image(s) based on geometry. (See below)
-### -v|--verbose
+### --verbose
 Set verbose mode: Show operations as they are performed. If -d|--dry-run is also set, operations are shown without actually doing them.
-### -V|--version
+### --version
 Show program version and exit.
 ### --dumpkeys
 Dump EXIF tag keys for first found file and exit. May be used to help with formatting.
