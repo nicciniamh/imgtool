@@ -16,36 +16,15 @@ the format option. This would allow creation of a directory structure based on i
 Files created by digital photography have a header built-in called *Exhangeabe Image Format* or [EXIF](https://en.wikipedia.org/wiki/Exif) header. There is a lot of information that can be in this header that relates to the photograph, when it was taken, sometimes where it was taken, camera settings, camera model, etc. This tool extracts this information and uses it to create unique names for photography files, rotate them, etc.
 
 ## Table of Contents
-- [Usage](#usage)
-    - [-a|--rot-angle](#--rot-angle)
-    - [-h|--help](#--help)
-    - [--help-geometry](#--help-geometry)
-    - [-R|--recurse](#--recurse)
-    - [-c|--camera-names](#--camera-names)
-    - [-d|--directory](#--directory)
-    - [-D|--dry-run](#--dry-run)
-    - [-f|--format](#--format)
-    - [-i|--ignore-no-exif](#--ignore-no-exif)
-    - [-n|--no-clobber](#--no-clobber)
-    - [-q|--required-tag](#--required-tag)
-    - [-p|--patern](#--patern)
-    - [-r|--auto-rotate](#--auto-rotate)
-    - [-t|--thumnbail](#--thumnbail)
-    - [--thumb-dir](#--thumb-dir)
-    - [--thumb-geometry](#--thumb-geometry)
-    - [-z|--resize](#--resize)
-    - [-v|--verbose](#--verbose)
-    - [-V|--version](#--version)
-    - [--dumpkeys](#--dumpkeys)
 
-- [Automatic Image Naming](#automatic-image-naming)
-- [Splitting strings in tags](#splitting-strings-in-tags)
-      - [Indexing](#indexing)
-      - [Substrings](#substrings)
+- [Usage](#usage)
+    - [Program Options](#program-options)
 - [Geometry](#geometry)
 - [Order of operations](#order-of-operations)
+- [Automatic Image Naming](#automatic-image-naming)
+    - [Splitting strings in tags](#splitting-strings-in-tags)
 - [Some tips](#some-tips)
-- [A Strong Warning](#warning)
+- [WARNING](#warning)
 - [Author](#author)
 - [Copyright](#copyright)
 - [License](#license)
@@ -53,59 +32,105 @@ Files created by digital photography have a header built-in called *Exhangeabe I
 
 ## Usage
 
-`imgtool [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory]
-                  [-f format-string] [-i] [-n] [-p Pattern] [-q REQUIRED_TAG]
-                  [-r] [-t] [--thumb-dir directory]
-                  [--thumb-geometry geometry] [-v] [-V] [-z geometry]
-                  [--debug] [--dumpkeys] [--help-geometry] [--help-format]
-                  [PATH [PATH ...]]
-`
-### --rot-angle
-Specify angle for rotation and override EXIF data.
-### --help
-Show help text
-### --help-geometry
-Show help on resize geometry
-### --recurse
-Recurse into subdirectories
-### --camera-names
-Use embedded EXIF camera name to rename files.
-### --directory
-Specify output directory. Formatting with exif tags is allowed. See formatting below.
-### --dry-run
-Show all actions to be performed without doing them. Also sets -v|--verbose
-### --format
-Time format string for filenaming in Python strftime format. Default is `@Exif.Image.Model[1]_%Y%m%d%H%M%S@File.ext`
-### --ignore-no-exif
-Ignore that a file has no EXIF data. Default is to skip files without EXIF data.
-### --no-clobber
-Do not overwrite files. Files will be named as "newname (n).ext" where n is a number indicating the number of files with the new name. Similar to other file renaming operations
-### --required-tag
-Require specific EXIF tag to be in the header for processing.
-### --patern
-Glob format pattern to search for files, e.g., .jpg, default is .[Jj][Pp][Gg] (see glob(3) and fnmatch(3))
-### --auto-rotate
-Automatically rotate image(s) based on EXIF Orientation tag. If not present, or set to 1 no rotation is performed
-### --thumnbail
-Automaticall generate image thumbnails
-### --thumb-dir
-Specify thumbmail output directory
-### --thumb-geometry
-Specify thumbnail geometry as XXxYY or x%, the latter is not recommended.
-### --resize
-Resize image(s) based on geometry. (See below)
-### --verbose
-Set verbose mode: Show operations as they are performed. If -d|--dry-run is also set, operations are shown without actually doing them.
-### --version
-Show program version and exit.
-### --dumpkeys
-Dump EXIF tag keys for first found file and exit. May be used to help with formatting.
+`usage: imgtool.py [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory] [-f format-string] [-i] [-n] [-p Pattern] [-q REQUIRED_TAG] [-r] [-t] [--thumb-dir directory] [--thumb-geometry geometry] [-v] [-V] [-z geometry] [--debug] [--dumpkeys] [--help-geometry] [--help-format] [PATH [PATH ...]] `
+
+### Program Options
+
+#### rotation-angle
+-a ROTANGLE, --rotation-angle ROTANGLE
 
 
-## Program Options  ##
+#### camera-names
+-c, --camera-names Rename pictures that have an embedded camera name to
+
+
+#### output-directory
+-d directory, --output-directory directory
+
+
+#### dry_run
+-D, --dry_run Dry run: show what will be done without actually doing
+
+
+#### debug
+--debug Enable debugging messages
+
+
+#### dumpkeys
+--dumpkeys Dump all exif tag keys for first file and exit.
+
+
+#### format
+-f format-string, --format format-string
+
+
+#### ignore-no-exif
+-i, --ignore-no-exif Ignore that a file has no EXIF data. Default is to
+
+
+#### no-clobber
+-n, --no-clobber Do not overwrite existing files. Files will be named
+
+
+#### pattern
+-p Pattern, --pattern Pattern
+
+
+#### required-tag
+-q REQUIRED_TAG, --required-tag REQUIRED_TAG
+
+
+#### auto-rotate
+-r, --auto-rotate Automatically rotate images.
+
+
+#### recurse
+-R, --recurse Recurse into sub-directories
+
+
+#### thumb-dir
+--thumb-dir directory
+
+
+#### thumb-dir
+--thumb-dir to override output directory.
+
+
+#### thumb-geometry
+--thumb-geometry geometry
+
+
+#### thumb-geometry
+--thumb-geometry to override default of 96x96, use
+
+
+#### thumbnail
+-t, --thumbnail Generate thumbnails in the same output path. Use
+
+
+#### verbose
+-v, --verbose Be chatty about what is being done.
+
+
+#### version
+-V, --version Show version information and exit.
+
+
+#### resize
+-z geometry, --resize geometry
+
+
+
 ## Geometry
 
 Geometry can be specified as a percentage of the overall image or as a pair of width:height.  Width and height are specified in pixels. If width is specified but no height, e.g., 1000: the image will be reized to a width of 1000px with a height calculated in relation to width to maintain the image aspect ratio. Conversely, height is specified without a width, e.g., :1000 will resize the image to 1000px high with a width calculated to maintain the aspect ratio.  When the width and height are spcecified no attempt to maintain the aspect ratio is made.
+
+## Order of operations
+Each image processed, if the operations are specified, has their operations peformed in this order:
+1. Image resize
+2. Auto-rotation
+3. Dating and/or Renaming
+4. Thumbnail generation
 
 ## Automatic Image Naming
 
@@ -307,20 +332,10 @@ Time formatting, using the EIXF header's image time, is formatted using strftime
 
 (Taken from Linux strftime(3) manual page, from the [Linux Man Pages Project](http://www.kernel.org/doc/man-pages))
 
-
-## Order of operations
-Each image processed, if the operations are specified, has their operations peformed in this order:
-1. Image resize
-2. Auto-rotation
-3. Dating and/or Renaming
-4. Thumbnail generation
-
-
 ## Some tips
 1. Always backup data!
 2. Before emplyoing this tool on a number of photos, be sure it will do what you want it to do using the -D or --dry-run option. This will tell you most of what operations are being done without actually doing them.
 3. When using EXIF tags for renaming files from multiple camera make/models, do not use vendor specific tags, e.g. Exif.NikonFi.FileNumber as these may not be consistent across those cameras even for the same manufacturer. 
-
 
 ## WARNING
 
