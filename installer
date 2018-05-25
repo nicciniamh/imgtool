@@ -1,0 +1,138 @@
+#!/usr/bin/env python
+import sys, os, json, shutil, errno, glob
+import argparse
+forceTmp = False
+instkeys = ['bin','man','doc','lib']
+
+class FullPaths(argparse.Action):
+    """Expand user- and relative-paths"""
+    def __call__(self, parser, namespace, values, option_string=None):
+        if values is None:
+            setattr(namespace, self.dest,None)
+        else:
+            setattr(namespace, self.dest, os.path.abspath(os.path.expanduser(values)))
+
+def is_dir(dirname):
+    if not dirname:
+        return None
+    if dirname == 'none':
+        return None
+    dirname = os.path.abspath(os.path.expanduser(dirname))
+    """Checks if a path is an actual directory"""
+    if not os.path.isdir(dirname):
+        msg = "{0} is not a directory".format(dirname)
+        raise argparse.ArgumentTypeError(msg)
+    if not isWritable(dirname):
+        msg = "{0} is not writeable".format(dirname)
+        raise argparse.ArgumentTypeError(msg)
+    else:
+        return dirname
+
+def isWritable(directory):
+    try:
+        tmp_prefix = "write_tester";
+        count = 0
+        filename = os.path.join(directory, tmp_prefix)
+        while(os.path.exists(filename)):
+            filename = "{}.{}".format(os.path.join(directory, tmp_prefix),count)
+            count = count + 1
+        f = open(filename,"w")
+        f.close()
+        os.remove(filename)
+        return True
+    except Exception as e:
+        return False
+
+
+ourwd = os.path.dirname(os.path.abspath(sys.argv[0]))
+defsources = '{}/installer.json'.format(ourwd)
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--bindir", dest="bin", metavar='program-dir',  type=is_dir, default=None, action=FullPaths,help="Directory to store executable(s)")
+parser.add_argument("--docdir", dest="doc", metavar='doccument-dir',type=is_dir, default=None, action=FullPaths,help="Directory to store document(s)")
+parser.add_argument("--mandir", dest="man", metavar='man-dir',      type=is_dir, default=None, action=FullPaths,help="Directory to store manual page(s)")
+parser.add_argument("--libdir", dest="lib", metavar='library-dir',  type=is_dir, default=None, action=FullPaths,help="Directory to store library files(s)")
+parser.add_argument("--sources",dest="sources", metavar='source-list', type=str, default=defsources, action='store',help="JSON file containing install source")
+
+args = parser.parse_args()
+a = args.__dict__
+files = []
+
+try:
+    with open(args.sources) as f:
+        idic = json.load(f)
+except Exception as e:
+    print >>sys.stderr,'{}: Cannot open install source information, {}: {}'.format(os.path.basename(sys.argv[0]),args.sources,e)
+    sys.exit(1)
+try:
+        for k in instkeys:
+            if not a[k]:
+                continue
+            try:
+                i = idic[k]
+            except KeyError:
+                i = None
+            if not i:
+                continue
+            if i['mode'].startswith('0x'):
+                mode = int(i['mode'],16)
+            elif i['mode'].startswith('0'):
+                mode = int(i['mode'],8)
+            else:
+                mode = int(i['mode'])
+            try:
+                dest = a[i['dest']]
+            except Exception as e:
+                dest = i['default']
+            if dest is None:
+                i['dest'] = i['default']
+            if not dest or not dest.startswith('/'):
+                dest = i['default']
+            source = i['source']
+
+            if type(i['source']) is not list:
+                source = [source]
+            if forceTmp:
+                if dest.startswith('/'):
+                    dest = dest[1:]
+                dest = os.path.join('/tmp/test',*os.path.split(dest))
+
+            for x in source:
+                src = glob.glob(x)
+                for s in src:
+                    dst = os.path.join(dest,os.path.basename(s))
+                    files.append((s,dst, mode))
+
+except Exception as e:
+    print >>sys.stderr,'{}: Cannot open process source information, {}: {}'.format(os.path.basename(sys.argv[0]),args.sources,e)
+    sys.exit(1)
+
+if not files or len(files) is 0:
+    print >>sys.stderr, '{}: Nothing to do.'.format(sys.argv[0])
+cnt = 0
+for source,dest,mode in files:
+    print source,'=>',dest,'mode: 0{:o}'.format(mode)
+    ddir = os.path.dirname(dest)
+    try:
+        msg = None
+        os.makedirs(ddir)
+    except OSError as e:
+        if not e.errno is errno.EEXIST:
+            msg = 'Cannot create destination directory, {}: {}'.format(ddir,e)
+    except Exception as e:
+        msg = 'Cannot create destination directory, {}: {}'.format(ddir,e)
+    finally:
+        if msg:
+            print >>sys.stderr,'{}: {}'.format(sys.argv[0],msg)
+            sys.exit(1)
+    try:
+        if dest:
+            shutil.copyfile(source,dest)
+            os.chmod(dest, mode)
+            cnt = cnt + 1
+    except Exception as e:
+        print >>sys.stderr,'{} Error copying file, {}, to {}, {}'.format(sys.argv[0],i['source'],i['dest'],e)
+        sys,exit(1)
+
+print 'Install complete, {} file(s) copied.'.format(cnt)

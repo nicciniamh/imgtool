@@ -1,0 +1,22 @@
+{ "bin": 
+{
+    "source": "imgtool",
+    "dest": "bin",
+    "mode": "0755",
+    "default": "/usr/bin"
+},
+"man":
+{
+    "source": "imgtool.1",
+    "dest": "man",
+    "mode": "0644",
+    "default": "/usr/man/man1"
+},
+"doc":
+{
+    "source": "README.md",
+    "dest": "doc",
+    "mode": "0644",
+    "default": "/usr/share/doc/imgtool"
+}
+}
