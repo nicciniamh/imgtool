@@ -24,15 +24,16 @@ Files created by digital photography have a header built-in called *Exhangeabe I
 - [Automatic Image Naming](#automatic-image-naming)
     - [Splitting strings in tags](#splitting-strings-in-tags)
 - [Some tips](#some-tips)
+- [Installation](#installation)
+    - [Running the installer script:](#running-the-installer-script:)
 - [WARNING](#warning)
 - [Author](#author)
 - [Copyright](#copyright)
 - [License](#license)
-- [Installation](#installation)
 
 ## Usage
 
-`usage: imgtool.py [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory] [-f format-string] [-i] [-n] [-p Pattern] [-q REQUIRED_TAG] [-r] [-t] [--thumb-dir directory] [--thumb-geometry geometry] [-v] [-V] [-z geometry] [--debug] [--dumpkeys] [--help-geometry] [--help-format] [PATH [PATH ...]] `
+`usage: imgtool [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory] [-f format-string] [-i] [-n] [-p Pattern] [-q REQUIRED_TAG] [-r] [-t] [--thumb-dir directory] [--thumb-geometry geometry] [-v] [-V] [-z geometry] [--debug] [--dumpkeys] [--help-geometry] [--help-format] [PATH [PATH ...]] `
 
 ### Program Options
 
@@ -337,6 +338,27 @@ Time formatting, using the EIXF header's image time, is formatted using strftime
 2. Before emplyoing this tool on a number of photos, be sure it will do what you want it to do using the -D or --dry-run option. This will tell you most of what operations are being done without actually doing them.
 3. When using EXIF tags for renaming files from multiple camera make/models, do not use vendor specific tags, e.g. Exif.NikonFi.FileNumber as these may not be consistent across those cameras even for the same manufacturer. 
 
+## Installation
+
+The installer script will install the files, based on what is in installer.json, to appropriate directories with the specified mode. 
+
+### Running the installer script:
+```
+usage: installer [-h] [--bindir program-dir] [--docdir doccument-dir]
+                 [--mandir man-dir] [--libdir library-dir]
+                 [--sources source-list]
+
+optional arguments:
+  -h, --help              show this help message and exit
+  --bindir program-dir    Directory to store executable(s)
+  --docdir doccument-dir  Directory to store document(s)
+  --mandir man-dir        Directory to store manual page(s)
+  --libdir library-dir    Directory to store library files(s) (Not used for this tool)
+```
+
+Running installer without arguments will install the program to /usr/bin, the manual page to /usr/man/man1, and this file to /usr/share/doc/imgtool. You must have appropriate access rights, e.g., sudo, to perform this install. The installer can write to other directories. Specifying 'none' as the deestination will prevent that part from being copied.
+
+
 ## WARNING
 
 This tool is ALPHA. I have tested it in a limited environment and was
@@ -359,8 +381,4 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may
 not use this file except in compliance with the License. You may obtain
 a copy of the License at [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-## Installation
 
-To run the installer script, run bash install.sh 
-
-The installer script looks for PATH and MANPATH to present installation directories. Proper permisions (e.g, sudo) must be obtained first. Alternatively the script can be copied anywhere and execute be set (chmod 755). The man page, imgtool.1, can be put in man1 on manpath. 
