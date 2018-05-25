@@ -5,6 +5,32 @@
 
 ### Other
 
+* Improved installer. [Nicole Stevens]
+
+* Renamed imgtool.py to imgtool, removed installer bash script. [Nicole Stevens]
+
+* Minor readme update and cleanup. [Nicole Stevens]
+
+* Updated Readme. [Nicole Stevens]
+
+* Updated Readme. [Nicole Stevens]
+
+* Updated Readme. [Nicole Stevens]
+
+* Updated Changelog. [Nicole Stevens]
+
+* Updated Readme. [Nicole Stevens]
+
+* Updated Readme. [Nicole Stevens]
+
+* Updated Readme. [Nicole Stevens]
+
+* Updated Readme. [Nicole Stevens]
+
+* Updated Readme. [Nicole Stevens]
+
+* Updated Readme. [Nicole Stevens]
+
 * Updated Readme. [Nicole Stevens]
 
 * Edit to have TOC in readme. [Nicole Stevens]
