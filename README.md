@@ -1,5 +1,7 @@
-# Imgtool JPEG Photo tool
+# Imgtool - JPEG Photo tool
 
+## Descrtiption
+imgtool is a tool for dating, renaming, organizing, resizing, rotating and thumbnailing images based on the information stored in their EXIF header. This is to aid in the processing and organizing of digital photography images.
 
 ## Background
 I have a fairly large collection of digital photos I have taken with my phone and three different Nikon cameras. 
