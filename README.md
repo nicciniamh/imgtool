@@ -1,21 +1,46 @@
 # Imgtool - JPEG Photo tool
 
-## Descrtiption
-imgtool is a tool for dating, renaming, organizing, resizing, rotating and thumbnailing images based on the information stored in their EXIF header. This is to aid in the processing and organizing of digital photography images.
+## Descrtiption 
+
+imgtool is a tool for dating, renaming, organizing, resizing, rotating
+and thumbnailing images based on the information stored in their EXIF
+header. This is to aid in the processing and organizing of digital
+photography images.
 
 ## Background
-I have a fairly large collection of digital photos I have taken with my phone and three different Nikon cameras. 
 
-In an effort to have unqique file names, I wrote this tool. I also added the functionality of a couple other operations I frequently do in post-processing.
+I have a fairly large collection of digital photos I have taken with my
+phone and three different Nikon cameras.
 
-A number of graphics tools will honor the Orientation tag in an image, however, on occasion, I find I need to manually rotate an image. More commonly, images get resized and renamed. Sometimes other tools are employed which modify the timestamp of the file, on the files system, which can disrupt sorting. (I use a date descending order in my file manager to show me the most recent photos) The default operation of imgtool is to set the timestamp of the files it finds with the date stamp in the photo's EXIF header. 
+In an effort to have unqique file names, I wrote this tool. I also added
+the functionality of a couple other operations I frequently do in post-
+processing.
 
-Files can be moved (or copied if to a different device) to another directory. The naming can have embedded exif data just like
-the format option. This would allow creation of a directory structure based on image data. E.g.,
-  `~/Photos/%Y-%m-%d .` will create a tree of directories based on the EXIF (or file) Date/Time. Any subdirectory trees are maintaine. 
+A number of graphics tools will honor the Orientation tag in an image,
+however, on occasion, I find I need to manually rotate an image. More
+commonly, images get resized and renamed. Sometimes other tools are
+employed which modify the timestamp of the file, on the files system,
+which can disrupt sorting. (I use a date descending order in my file
+manager to show me the most recent photos) The default operation of
+imgtool is to set the timestamp of the files it finds with the date
+stamp in the photo's EXIF header.
+
+Files can be moved (or copied if to a different device) to another
+directory. The naming can have embedded exif data just like the format
+option. This would allow creation of a directory structure based on
+image data. E.g., `~/Photos/%Y-%m-%d .` will create a tree of
+directories based on the EXIF (or file) Date/Time. Any subdirectory
+trees are maintaine.
 
 ## Digital Photography Images
-Files created by digital photography have a header built-in called *Exhangeabe Image Format* or [EXIF](https://en.wikipedia.org/wiki/Exif) header. There is a lot of information that can be in this header that relates to the photograph, when it was taken, sometimes where it was taken, camera settings, camera model, etc. This tool extracts this information and uses it to create unique names for photography files, rotate them, etc.
+
+Files created by digital photography have a header built-in called
+*Exhangeabe Image Format* or EXIF (https://en.wikipedia.org/wiki/Exif)
+header. There is a lot of information that can be in this header that
+relates to the photograph, when it was taken, sometimes where it was
+taken, camera settings, camera model, etc. This tool extracts this
+information and uses it to create unique names for photography files,
+rotate them, etc.
 
 ## Table of Contents
 
@@ -27,6 +52,7 @@ Files created by digital photography have a header built-in called *Exhangeabe I
     - [Splitting strings in tags](#splitting-strings-in-tags)
 - [Some tips](#some-tips)
 - [Installation](#installation)
+- [Pre-requisites](#pre-requisites)
     - [Running the installer script:](#running-the-installer-script:)
 - [WARNING](#warning)
 - [Author](#author)
@@ -126,10 +152,18 @@ Files created by digital photography have a header built-in called *Exhangeabe I
 
 ## Geometry
 
-Geometry can be specified as a percentage of the overall image or as a pair of width:height.  Width and height are specified in pixels. If width is specified but no height, e.g., 1000: the image will be reized to a width of 1000px with a height calculated in relation to width to maintain the image aspect ratio. Conversely, height is specified without a width, e.g., :1000 will resize the image to 1000px high with a width calculated to maintain the aspect ratio.  When the width and height are spcecified no attempt to maintain the aspect ratio is made.
+Geometry can be specified as a percentage of the overall image or as a
+pair of width:height.  Width and height are specified in pixels. If
+width is specified but no height, e.g., 1000: the image will be reized
+to a width of 1000px with a height calculated in relation to width to
+maintain the image aspect ratio. Conversely, height is specified without
+a width, e.g., :1000 will resize the image to 1000px high with a width
+calculated to maintain the aspect ratio.  When the width and height are
+spcecified no attempt to maintain the aspect ratio is made.
 
 ## Order of operations
-Each image processed, if the operations are specified, has their operations peformed in this order:
+Each image processed, if the operations are specified, has their operations
+peformed in this order:
 1. Image resize
 2. Auto-rotation
 3. Dating and/or Renaming
@@ -140,47 +174,54 @@ Each image processed, if the operations are specified, has their operations pefo
 Formatting filenames for automatic renaming is as follows:
     [@|+]type.Tag%timefmt
 
-Tags starting with @ have their spaces replaced with periods (.), Tags starting with + 
-do not have spaces replaced. There are two types of tags, File and Exif. File Tags are:
+Tags starting with @ have their spaces replaced with periods (.), Tags
+starting with + do not have spaces replaced. There are two types of tags, File
+and Exif. File Tags are:
 
     File.Name:  Filename of the image without extension
     File.Ext:   Extension of filename, e.g., .JPG 
     File.ext:   Extension of filename converted to lower-case, e.g., .jpg
     File.Fullname: Full name of file with directories.
-    File.mtime: String representation YYYYMMDDhhmmss of the file's timestamp in the filesystem.
+    File.mtime: String representation YYYYMMDDhhmmss of the file's timestamp in
+    the filesystem.
 
 
-EXIF Tags vary by image and camera. The program exiftool may be useful in finding appropriate tags. 
-When specifying EXIF Tags, they are formatted as Exif.Image.Model which results in a string, for one 
-of my cameras, as 'NIKON D3400', by default the resultant string will have spaced replaced with 
+EXIF Tags vary by image and camera. The program exiftool may be useful in
+finding appropriate tags. When specifying EXIF Tags, they are formatted as
+Exif.Image.Model which results in a string, for one of my cameras, as 
+'NIKON D3400',by default the resultant string will have spaced replaced with
 periods (.), to suppress this behavior, precede them with a plus (+). E.g.:
 
-    @Exif.Image.Make returns 'NIKON.D3400' where +Exif.Image.Make returns 'NIKON D3400' 
+    @Exif.Image.Make returns 'NIKON.D3400' where +Exif.Image.Make 
+    returns 'NIKON D3400' 
 
 This conversion is done just before substituting the tag with its value. 
 
 ### Splitting strings in tags
-Splitting the tag values can be done as an index of space separated words or as a substring. 
+Splitting the tag values can be done as an index of space separated words 
+or as asubstring. 
 
 #### Indexing
 To use an index, 
-place the index number in brackets, e.g, @Exif.Image.Make[1] returns 'D3400' instead of 'NIKON D3400'. 
-Index values start with 0. 
+place the index number in brackets, e.g, @Exif.Image.Make[1] returns 'D3400'
+instead of 'NIKON D3400'. Index values start with 0. 
 
 #### Substrings
-To use a substring, place the start and, optionally the length in parentheses. E.g,
-@Exif.Image.Make(7,5) will return 'D3400' instead of 'NIKON D3400'. If the second value is omitted the 
-length of the value, starting at the first number is presumed, so @Exif.Image.Make(7) will also result 
-with 'D3400'
+To use a substring, place the start and, optionally the length in parentheses.
+E.g,: @Exif.Image.Make(7,5) will return 'D3400' instead of 'NIKON D3400'. If
+the second value is omitted the length of the value, starting at the first 
+number is presumed, so @Exif.Image.Make(7) will also result with 'D3400'
 
-Any EXIF Tag present in the image EXIF header can be used to create all or part of a file name. For example, 
-`@Image.Make[1]_@File.name@File.ext will create, from DSC_328.JPG a name of 'D3400_DSC_328.jpg'.`
+Any EXIF Tag present in the image EXIF header can be used to create all or part
+of a file name. For example, `@Image.Make[1]_@File.name@File.ext will create,
+from DSC_328.JPG a name of 'D3400_DSC_328.jpg'.`
 
 
-Note that the @File tags are never evaluated with a plus instead of an at-sign, and no indexing or substring
-operations are performed.
+Note that the @File tags are never evaluated with a plus instead of an at-sign,
+and no indexing or substring operations are performed.
 
-Time formatting, using the EIXF header's image time, is formatted using strftime(3) format, or with the following formatting keys:
+Time formatting, using the EIXF header's image time, is formatted using
+strftime(3) format, or with the following formatting keys:
 
        %a     The abbreviated name of the day of the week according to the
               current locale.  (Calculated from tm_wday.)
@@ -333,16 +374,40 @@ Time formatting, using the EIXF header's image time, is formatted using strftime
        symbols (say, roman numerals), and that of the E modifier is to use a
        locale-dependent alternative representation.
 
-(Taken from Linux strftime(3) manual page, from the [Linux Man Pages Project](http://www.kernel.org/doc/man-pages))
+(Taken from Linux strftime(3) manual page, from the Linux Man Pages Project,
+http://www.kernel.org/doc/man-pages)
 
 ## Some tips
 1. Always backup data!
-2. Before emplyoing this tool on a number of photos, be sure it will do what you want it to do using the -D or --dry-run option. This will tell you most of what operations are being done without actually doing them.
-3. When using EXIF tags for renaming files from multiple camera make/models, do not use vendor specific tags, e.g. Exif.NikonFi.FileNumber as these may not be consistent across those cameras even for the same manufacturer. 
+2. Before emplyoing this tool on a
+number of photos, be sure it will do what  you want it to do using the
+-D or --dry-run option. This will tell you most  of what operations are
+being done without actually doing them.
+3. When using EXIF tags for renaming files from multiple camera 
+make/models, do not use vendor specific tags, e.g. Exif.NikonFi.FileNumber
+as these may not be consistent across those cameras even for the same
+manufacturer.
 
 ## Installation
 
-The installer script will install the files, based on what is in installer.json, to appropriate directories with the specified mode. 
+## Pre-requisites
+imgtool requires the following python packages in order to work
+pyexiv2 -   https://github.com/escaped/pyexiv2
+Pillow -    (pip install pillow)
+
+The standard modules used are:
+os  -               OS Dependent interfaces
+sys -               System interfaces
+datetime, time -    Date and time manipulation and conversions
+re -                Regular expression library
+fnmatch, glob2, shutil - File globbing, matching and copying.
+
+This tool was developed on Linux. While untested it may work on 
+OSX and Windows provided these libraries are installed.
+
+The installer script will install the files, based on what is
+in installer.json, to appropriate directories with the specified
+mode. 
 
 ### Running the installer script:
 ```
@@ -358,16 +423,21 @@ optional arguments:
   --libdir library-dir    Directory to store library files(s) (Not used for this tool)
 ```
 
-Running installer without arguments will install the program to /usr/bin, the manual page to /usr/man/man1, and this file to /usr/share/doc/imgtool. You must have appropriate access rights, e.g., sudo, to perform this install. The installer can write to other directories. Specifying 'none' as the deestination will prevent that part from being copied.
+Running installer without arguments will install the program to 
+/usr/bin, the manual page to /usr/man/man1, and this file to
+/usr/share/doc/imgtool. You must have appropriate access rights, 
+e.g.:, sudo, to perform this install. The installer can write to
+other directories. Specifying 'none' as the deestination will prevent 
+that part from being copied.
 
 
 ## WARNING
 
 This tool is ALPHA. I have tested it in a limited environment and was
-written to work with my photographs. It may even be destructive.
-Backing up data is always a good idea before employing automatic tools
-that can recurse directories. If you break something, you own the
-remaining pieces.
+written to work with my photographs. It may even be destructive. Backing
+up data is always a good idea before employing automatic tools that can
+recurse directories. If you break something, you own the remaining
+pieces.
 
 ## Author
 
@@ -381,6 +451,6 @@ Copyright 2018 Nicole Stevens
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may
 not use this file except in compliance with the License. You may obtain
-a copy of the License at [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 
