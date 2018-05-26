@@ -15,7 +15,8 @@ echo -e '## Table of Contents\n' >bot-readme
 ./buildtoc sec-content 2 >>bot-readme 
 echo >>bot-readme
 cat sec-content >>bot-readme
-cat top-readme bot-readme >readme-markdown
+cat head bot-readme >readme-markdown
+rm options sec-content bot-readme
 ./markdown2man -n imgtool -t 'imgtool - Photo Image Processing Tool' -o imgtool.1 readme-markdown
 cp readme-markdown ../README.md
 cp imgtool.1 ..

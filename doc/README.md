@@ -18,5 +18,5 @@ These files are used to build the README.md and manual page for imgtool.
 - splitopts - Take the ouput of imgtool -h and convert usage stuff to markdown
 
 ## Flotsam and Jetsam
-Several files are build during the process and are not removed. They are small and this is ok
+Several files are build during the process and may not be removed. They are small and this is ok.
 
