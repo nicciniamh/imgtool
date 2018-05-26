@@ -61,8 +61,14 @@ rotate them, etc.
 
 ## Usage
 
-`usage: imgtool [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory] [-f format-string] [-i] [-n] [-p Pattern] [-q REQUIRED_TAG] [-r] [-t] [--thumb-dir directory] [--thumb-geometry geometry] [-v] [-V] [-z geometry] [--debug] [--dumpkeys] [--help-geometry] [--help-format] [PATH [PATH ...]] `
-
+```
+usage: imgtool [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory]
+               [-f format-string] [-i] [-n] [-p Pattern] [-q REQUIRED_TAG]
+               [-r] [-t] [--thumb-dir directory] [--thumb-geometry geometry]
+               [-v] [-V] [-z geometry] [--debug] [--dumpkeys]
+               [--help-geometry] [--help-format]
+               [PATH [PATH ...]]
+```
 ### Program Options
 
 #### rotation-angle
