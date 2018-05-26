@@ -1,0 +1,22 @@
+#!/bin/bash
+echo "Building readme-markdown"
+echo -e "## Usage\n" >options
+echo '```' >>options
+../imgtool -h | grep '\[' | grep -v '@'>>options
+echo '```'>>options
+../imgtool -h | grep '^[ ]*-' | sort | grep -v '-help' | ./splitopts >> options
+(for f in $(cat sections) ; do
+    t=$(head -1 "$f")
+    echo "Adding ${t}" >&2
+    cat "$f"
+    echo
+done) >sec-content
+echo -e '## Table of Contents\n' >bot-readme
+./buildtoc sec-content 2 >>bot-readme 
+echo >>bot-readme
+cat sec-content >>bot-readme
+cat top-readme bot-readme >readme-markdown
+./markdown2man -n imgtool -t 'imgtool - Photo Image Processing Tool' -o imgtool.1 readme-markdown
+cp readme-markdown ../README.md
+cp imgtool.1 ..
+

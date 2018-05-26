@@ -1,0 +1,10 @@
+## Some tips
+1. Always backup data!
+2. Before emplyoing this tool on a
+number of photos, be sure it will do what  you want it to do using the
+-D or --dry-run option. This will tell you most  of what operations are
+being done without actually doing them.
+3. When using EXIF tags for renaming files from multiple camera 
+make/models, do not use vendor specific tags, e.g. Exif.NikonFi.FileNumber
+as these may not be consistent across those cameras even for the same
+manufacturer.

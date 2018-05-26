@@ -1,0 +1,70 @@
+#!/usr/bin/env python2
+import os, sys, re
+import argparse
+
+
+sections = []
+cursec = None
+
+#ignoresects = ['Table of Contents']
+ignoresects = []
+
+class sect:
+    def __init__(self, title):
+        self.title = title.replace('#','').strip()
+        self.content = []
+
+    def append(self,line):
+        line = re.sub(r'[\`]','',line)
+        self.content.append(line)
+
+    def dump(self, output):
+        output.write('.SH {}\n'.format(self.title))
+        output.write('{}\n'.format('^^'.join(self.content).replace('\n\n','%%').replace('^^',' ').replace('%%','\n\n')))
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', type=str, default='Table of Contents', action='store',dest='ignore',
+                    help='Sections in the markdown to ignore when writing manual page. Sections delimited with commas.',
+                    metavar='section-title')
+parser.add_argument('-n', action='store',type=str, default=None, dest='name', help='Name of command')
+parser.add_argument('-s', action='store',type=int, default=1,    dest='section', help='Manual Section')
+parser.add_argument('-t', action='store',type=str, default=None, dest='title', help='Title of Manual Page')
+parser.add_argument('-o', type=argparse.FileType('w'), action='store', dest='output', help='Output file')
+parser.add_argument('list', metavar='markdown file(s)', type=str, nargs='*',
+                    help='File(s) or sub-directories to process')
+
+args = parser.parse_args()
+for x in ['name','section','title']:
+    if not args.__dict__[x]:
+        print >>sys.stderr, '{} requires an argument, use -h for help'.format(x)
+        sys.exit(1)
+
+if len(args.list) < 1:
+    print >>stderr,'No input specified.'
+    sys.exit(1)
+
+if not args.output:
+    args.output = sys.stdout
+ignoresects = args.ignore.split(',')
+
+for name in args.list:
+    with open(name) as f:
+        for l in f:
+            if l.startswith('# '):
+                title = l.replace('#','').strip()
+            elif l.startswith('##'):
+                cursec = sect(l)
+                sections.append(cursec)
+            else:
+                if cursec:
+                    cursec.append(l)
+                else:
+                    print >>sys.stderr,'WARNING: Data encountered with no section {}'.format(l)
+
+args.output.write('.TH {} {}\n'.format(args.name, args.section))
+args.output.write('.SH NAME\n{}\n\n'.format(args.title))
+for s in sections:
+    if not s.title in ignoresects:
+        s.dump(args.output)
+    args.output.write('\n')
+args.output.write('\n')
