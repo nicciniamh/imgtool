@@ -5,6 +5,32 @@
 
 ### Other
 
+* Updated version to 0.1.8. [Nicole Stevens]
+
+* Fixed a bug where files are not copied when an output directory is specified but no renaming is specified. [Nicole Stevens]
+
+* Added function to extract EXIF thumbnail. [Nicole Stevens]
+
+* Fixed document builder to remove generated files and updated readme. [Nicole Stevens]
+
+* Fixed readme. [Nicole Stevens]
+
+* Tools and content for building README.md and imgtool.1 (manual page) [Nicole Stevens]
+
+* Documentation Cleanup. [Nicole Stevens]
+
+* Documentation Cleanup. [Nicole Stevens]
+
+* Documentation Cleanup. [Nicole Stevens]
+
+* Documentation Cleanup. [Nicole Stevens]
+
+* README and manual page built from smaller and identical documents, providing consistency in documentation. [Nicole Stevens]
+
+* Updated Changelog. [Nicole Stevens]
+
+* Updated README to reflect the new installation method. [Nicole Stevens]
+
 * Improved installer. [Nicole Stevens]
 
 * Renamed imgtool.py to imgtool, removed installer bash script. [Nicole Stevens]
