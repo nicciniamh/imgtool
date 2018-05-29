@@ -5,6 +5,10 @@
 
 ### Other
 
+* Updated version to 0.1.8.1 Fixed bug in geometry checking when only one cardinal was defined. Fixed bug where EXIF thumbnails were not being written to thumbnail directory Fixed bug where the thumbnail directory was not being created if it didn't exist. [Nicole Stevens]
+
+* Updated changelog. [Nicole Stevens]
+
 * Updated version to 0.1.8. [Nicole Stevens]
 
 * Fixed a bug where files are not copied when an output directory is specified but no renaming is specified. [Nicole Stevens]
