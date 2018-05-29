@@ -114,19 +114,25 @@ class log:
         self.out=out
         self.err=err
 
-    def logout(self,tag,s):
+    def __msgstr(self,l):
+        return ' '.join(map(str,l))
+    def logout(self,tag,*alist):
+        s = self.__msgstr(alist)
         print >>self.out,'{}: {}'.format(tag,s)
 
-    def errout(self,msg):
-        print >>self.err,'ERROR',msg
+    def errout(self,*alist):
+        s = self.__msgstr(alist)
+        print >>self.err,'ERROR',s
 
-    def debugout(self,msg):
+    def debugout(self,*alist):
         global args
+        s = self.__msgstr(alist)
         if args.debug:
-            print >>self.err,'DEBUG',msg
+            print >>self.err,'DEBUG',s
 
-    def __call__(self,tag,msg):
-        self.logout(tag,msg)
+    def __call__(self,tag,*alist):
+        s = self.__msgstr(alist)
+        self.logout(tag,s)
 
 logger = log()
 error = logger.errout
@@ -408,11 +414,16 @@ def setFileInfo(path,fname,exif,rename,outdir=None,noclobber=False):
     fname = os.path.join(path,fname)
     tstamp = exif.fileDate
     newname = False
-    if rename:
-        newname,tstamp = exif.exifNameForFile()
-        if not newname == fname:
-            if rename:
+    debug('path:',path,'fname:',fname,'rename:',rename,'outdir:', outdir, 'noclobber:', noclobber)
+    if rename or outdir:
+        if rename:
+            newname,tstamp = exif.exifNameForFile()
+        else:
+            newname = fname
+        if not newname == fname or outdir:
+            if rename or outdir:
                 if outdir:
+                    debug('output directory {}'.format(outdir))
                     outdir = exif.formatStringExif(os.path.expanduser(outdir))
                     outdir = list(os.path.split(outdir))
                     newname = list(os.path.split(newname))
@@ -424,9 +435,14 @@ def setFileInfo(path,fname,exif,rename,outdir=None,noclobber=False):
                     newname = outdir + newname
                     newname = os.path.join(*newname)
                 info = info + 'new name: {} '.format(newname)
+                debug('new name is {}'.format(newname))
                 if not dry:
                     try:
-                        newname = docopy(fname,newname,noclobber,exif.fileDate)
+                        if not rename:
+                            unlink=False
+                        else:
+                            unlink = True
+                        newname = docopy(fname,newname,noclobber,exif.fileDate,unlink=unlink)
                     except Exception as e:
                         error("Error renaming file {} to {}: {}".format(fname,newname,e))
                         raise e
@@ -448,7 +464,11 @@ def setFileInfo(path,fname,exif,rename,outdir=None,noclobber=False):
     else:
         return fname
 
-def docopy(src,dst,noclobber=False,ftime=None):
+def docopy(src,dst,noclobber=False,ftime=None,**kwargs):
+    if 'unlink' in kwargs:
+        unlink = kwargs['unlink']
+    else:
+        unlink = True
     newdir = os.path.dirname(dst)
     [dbase,ext] = os.path.splitext(dst)
     fn = 1
@@ -463,7 +483,8 @@ def docopy(src,dst,noclobber=False,ftime=None):
         raise RuntimeError('Cannot create new path {}',newdir)
     shutil.copy2(src,dst)
     if os.path.exists(dst):
-        os.unlink(src)
+        if unlink:
+            os.unlink(src)
         if ftime:
             os.utime(dst,(ftime,ftime))
         else:
@@ -583,9 +604,6 @@ if __name__ == '__main__':
             sys.exit(1)
 
     thumbgeo = (96,96)
-#    if args.genthumbs and args.extract_thumb:
-#        error('Cannot use --thumbnail and --exif-extract-thumb together.')
-#        sys.exit(1)
     if args.genthumbs and args.thumbgeo:
         try:
             thumbgeo = checkGeometry(args.thumbgeo)
