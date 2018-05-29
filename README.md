@@ -58,6 +58,7 @@ rotate them, etc.
 - [Installation](#installation)
 - [Pre-requisites](#pre-requisites)
     - [Running the installer script:](#running-the-installer-script:)
+- [Issues](#issues)
 - [WARNING](#warning)
 - [Author](#author)
 - [Copyright](#copyright)
@@ -444,6 +445,11 @@ e.g.:, sudo, to perform this install. The installer can write to
 other directories. Specifying 'none' as the deestination will prevent 
 that part from being copied.
 
+
+## Issues
+- The documentation has some missing parts from the auto-generated 
+stuff from reading the help output from imgtool. 
+- Not fuly tested, but working on it. 
 
 ## WARNING
 
