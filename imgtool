@@ -289,6 +289,23 @@ class fileExif:
         if not dry:
             t.save(fname)
 
+    def getExifThumb(self, fname, size, thumbdir=False):
+        [dir,name] = os.path.split(fname)
+        if not dir or len(dir) < 1:
+            dir = '.'
+        if verbose:
+            logger('INFO','Extract thumbnail for {} in {}'.format(fname,dir))
+        if thumbdir:
+            dir = thumbdir
+        name,ext = os.path.splitext(name)
+        name = '{}-thumb'.format(name)
+        fname = os.path.join(dir,name)
+        t = self.exif.previews[-1]
+        if verbose:
+            logger('INFO','Writing {} thumbnail to {}'.format(t.dimensions,fname))
+        if not dry:
+            t.write_to_file(fname)
+
 
     def tag(self,tag,_type = str):
         tag = tag.replace(' ','.')
@@ -518,10 +535,12 @@ if __name__ == '__main__':
                         help='Generate thumbnails in the same output path. Use --thumb-geometry to override default of 96x96, use --thumb-dir to override output directory.')
     parser.add_argument('--thumb-dir',action='store', default=None, dest='thumbdir', metavar='directory',
                         help='Override thumbnail output directory.')
+    parser.add_argument('-xt', '--exif-extract-thumb',dest='extract_thumb', default=False,action='store_true',
+                        help='Extract thumbnail from EXIF data and write using thumbnail rules.')
     parser.add_argument('--thumb-geometry',action='store', default=None, dest='thumbgeo', metavar='geometry',
                         help='Override thumbnail size with geometry, see --help-geometry')
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False,
-                        help='Be chatty about what is being done.')
+                        help='Describe what is being done.')
     parser.add_argument('-V','--version', action='store_true', dest='dispversion', default=False,
                         help='Show version information and exit.')
     parser.add_argument('-z', '--resize', action='store', dest='resize', default=None, metavar='geometry',
@@ -564,6 +583,9 @@ if __name__ == '__main__':
             sys.exit(1)
 
     thumbgeo = (96,96)
+#    if args.genthumbs and args.extract_thumb:
+#        error('Cannot use --thumbnail and --exif-extract-thumb together.')
+#        sys.exit(1)
     if args.genthumbs and args.thumbgeo:
         try:
             thumbgeo = checkGeometry(args.thumbgeo)
@@ -639,4 +661,8 @@ if __name__ == '__main__':
                     exif.genThumbFile(newname,thumbgeo,thumbdir)
                 else:
                     exif.genThumbFile(file, thumbgeo, thumbdir)
- 
+            if args.extract_thumb:
+                if newname:
+                    exif.getExifThumb(newname,thumbdir)
+                else:
+                    exif.getExifThumb(file,thumbdir)

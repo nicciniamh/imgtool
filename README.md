@@ -64,9 +64,9 @@ rotate them, etc.
 ```
 usage: imgtool [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory]
                [-f format-string] [-i] [-n] [-p Pattern] [-q REQUIRED_TAG]
-               [-r] [-t] [--thumb-dir directory] [--thumb-geometry geometry]
-               [-v] [-V] [-z geometry] [--debug] [--dumpkeys]
-               [--help-geometry] [--help-format]
+               [-r] [-t] [--thumb-dir directory] [-xt]
+               [--thumb-geometry geometry] [-v] [-V] [-z geometry] [--debug]
+               [--dumpkeys] [--help-geometry] [--help-format]
                [PATH [PATH ...]]
 ```
 ### Program Options
@@ -144,11 +144,15 @@ usage: imgtool [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory]
 
 
 #### verbose
--v, --verbose Be chatty about what is being done.
+-v, --verbose Describe what is being done.
 
 
 #### version
 -V, --version Show version information and exit.
+
+
+#### exif-extract-thumb
+-xt, --exif-extract-thumb
 
 
 #### resize
