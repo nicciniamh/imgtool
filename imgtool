@@ -3,7 +3,7 @@ import os, sys, datetime, time, fnmatch, glob2, re, pyexiv2, shutil
 from PIL import Image
 from PIL import ExifTags
 from argparse import ArgumentParser
-toolversion = '0.1.8'
+toolversion = '0.1.8.1'
 
 description = """
 Imgtool version {} - Copyright 2018 Nicole Stevens - Image manipulation tool:  
@@ -293,12 +293,15 @@ class fileExif:
         if verbose:
             logger('INFO','Writing {} thumbnail to {}'.format(t.size,fname))
         if not dry:
+            if not os.path.exists(dir):
+                os.makedirs(dir)
             t.save(fname)
 
-    def getExifThumb(self, fname, size, thumbdir=False):
+    def getExifThumb(self, fname, thumbdir=False):
         [dir,name] = os.path.split(fname)
         if not dir or len(dir) < 1:
             dir = '.'
+            debug('dir is',dir,'fname is', fname)
         if verbose:
             logger('INFO','Extract thumbnail for {} in {}'.format(fname,dir))
         if thumbdir:
@@ -310,6 +313,8 @@ class fileExif:
         if verbose:
             logger('INFO','Writing {} thumbnail to {}'.format(t.dimensions,fname))
         if not dry:
+            if not os.path.exists(dir):
+                os.makedirs(dir)
             t.write_to_file(fname)
 
 
@@ -518,10 +523,12 @@ def checkGeometry(geometry):
         if '%' in geometry:
             geometry = float(geometry.split('%')[0])/100.0
         elif 'x' in geometry:
-            geometry = map(int,geometry.split('x'))
+            l = geometry.split('x')
+            return map(lambda x: int(x) if x is not '' else None,geometry.split('x'))
         else:
             geometry = None
-    except:
+    except Exception as e:
+        debug('Exception computing geometry:',e)
         geometry = None
     return geometry
 
