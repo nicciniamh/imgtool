@@ -5,6 +5,14 @@
 
 ### Other
 
+* Changed document build process to use pandoc to create manual page. File cleanup. [Nicole Stevens]
+
+* Another minor docfix. [Nicole Stevens]
+
+* Another minor docfix. [Nicole Stevens]
+
+* Updated Changelog. [Nicole Stevens]
+
 * Minor document fix. [Nicole Stevens]
 
 * Updated changelog. [Nicole Stevens]
