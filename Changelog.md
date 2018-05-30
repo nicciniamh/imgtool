@@ -5,6 +5,10 @@
 
 ### Other
 
+* Minor document fix. [Nicole Stevens]
+
+* Updated changelog. [Nicole Stevens]
+
 * Made some markdown more link friendly, updated markdown2man conversion to remove link formatting. Updated Readme and manual page. [Nicole Stevens]
 
 * Updated changelog. [Nicole Stevens]
