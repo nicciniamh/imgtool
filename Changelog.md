@@ -5,6 +5,12 @@
 
 ### Other
 
+* Cleaned up folder content for documents. [Nicole Stevens]
+
+* On Github the doc directory was horribly messy. [Nicole Stevens]
+
+* Updated Changelog. [Nicole Stevens]
+
 * Cleanup of doc tools, update README. [Nicole Stevens]
 
 * Updated Changelog. [Nicole Stevens]
