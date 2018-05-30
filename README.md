@@ -46,8 +46,6 @@ taken, camera settings, camera model, etc. This tool extracts this
 information and uses it to create unique names for photography files,
 rotate them, etc.
 
-## Table of Contents
-
 - [Usage](#usage)
     - [Program Options](#program-options)
 - [Geometry](#geometry)
@@ -63,6 +61,7 @@ rotate them, etc.
 - [Author](#author)
 - [Copyright](#copyright)
 - [License](#license)
+
 ## Usage
 
 ```
@@ -163,7 +162,6 @@ usage: imgtool [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory]
 -z geometry, --resize geometry
 
 
-
 ## Geometry
 
 Geometry can be specified as a percentage of the overall image or as a
@@ -174,7 +172,6 @@ maintain the image aspect ratio. Conversely, height is specified without
 a width, e.g., :1000 will resize the image to 1000px high with a width
 calculated to maintain the aspect ratio.  When the width and height are
 spcecified no attempt to maintain the aspect ratio is made.
-
 ## Order of operations
 Each image processed, if the operations are specified, has their operations
 peformed in this order:
@@ -182,7 +179,6 @@ peformed in this order:
 2. Auto-rotation
 3. Dating and/or Renaming
 4. Thumbnail generation
-
 ## Automatic Image Naming
 
 Formatting filenames for automatic renaming is as follows:
@@ -390,7 +386,6 @@ strftime(3) format, or with the following formatting keys:
 
 (Taken from Linux strftime(3) manual page, from the Linux Man Pages Project,
 http://www.kernel.org/doc/man-pages)
-
 ## Some tips
 1. Always backup data!
 2. Before emplyoing this tool on a
@@ -401,7 +396,6 @@ being done without actually doing them.
 make/models, do not use vendor specific tags, e.g. Exif.NikonFi.FileNumber
 as these may not be consistent across those cameras even for the same
 manufacturer.
-
 ## Installation
 
 ## Pre-requisites
@@ -444,7 +438,6 @@ e.g.:, sudo, to perform this install. The installer can write to
 other directories. Specifying 'none' as the deestination will prevent 
 that part from being copied.
 
-
 ## Issues
 - The documentation has some missing parts from the auto-generated 
 stuff from reading the help output from imgtool. 
@@ -471,5 +464,4 @@ Copyright 2018 Nicole Stevens
 Licensed under the Apache License, Version 2.0 (the "License"); 
 you may not use this file except in compliance with the License. 
 You may obtain a copy of the License at [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
-
 

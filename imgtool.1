@@ -145,15 +145,12 @@ the image to 1000px high with a width calculated to maintain the aspect
 ratio.
 When the width and height are spcecified no attempt to maintain the
 aspect ratio is made.
-.SS Order of operations
-.PP
-Each image processed, if the operations are specified, has their
-operations peformed in this order: 1.
+## Order of operations Each image processed, if the operations are
+specified, has their operations peformed in this order: 1.
 Image resize 2.
 Auto\-rotation 3.
 Dating and/or Renaming 4.
-Thumbnail generation
-.SS Automatic Image Naming
+Thumbnail generation ## Automatic Image Naming
 .PP
 Formatting filenames for automatic renaming is as follows:
 [\@|+]type.Tag%timefmt
@@ -377,21 +374,18 @@ using strftime(3) format, or with the following formatting keys:
 .fi
 .PP
 (Taken from Linux strftime(3) manual page, from the Linux Man Pages
-Project, http://www.kernel.org/doc/man\-pages)
-.SS Some tips
-.IP "1." 3
-Always backup data!
-.IP "2." 3
+Project, http://www.kernel.org/doc/man\-pages) ## Some tips 1.
+Always backup data! 2.
 Before emplyoing this tool on a number of photos, be sure it will do
 what you want it to do using the \-D or \-\-dry\-run option.
 This will tell you most of what operations are being done without
 actually doing them.
-.IP "3." 3
+3.
 When using EXIF tags for renaming files from multiple camera
 make/models, do not use vendor specific tags, e.g.
 Exif.NikonFi.FileNumber as these may not be consistent across those
 cameras even for the same manufacturer.
-.SS Installation
+## Installation
 .SS Pre\-requisites
 .PP
 imgtool requires the following python packages in order to work \-

@@ -1,3 +1,343 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style>
+  /*
+   * I add this to html files generated with pandoc.
+   */
+  
+  html {
+    font-size: 100%;
+    overflow-y: scroll;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+  
+  body {
+    color: #444;
+    font-family: Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif;
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 1em;
+    margin: auto;
+    max-width: 42em;
+    background: #fefefe;
+  }
+  
+  a {
+    color: #0645ad;
+    text-decoration: none;
+  }
+  
+  a:visited {
+    color: #0b0080;
+  }
+  
+  a:hover {
+    color: #06e;
+  }
+  
+  a:active {
+    color: #faa700;
+  }
+  
+  a:focus {
+    outline: thin dotted;
+  }
+  
+  *::-moz-selection {
+    background: rgba(255, 255, 0, 0.3);
+    color: #000;
+  }
+  
+  *::selection {
+    background: rgba(255, 255, 0, 0.3);
+    color: #000;
+  }
+  
+  a::-moz-selection {
+    background: rgba(255, 255, 0, 0.3);
+    color: #0645ad;
+  }
+  
+  a::selection {
+    background: rgba(255, 255, 0, 0.3);
+    color: #0645ad;
+  }
+  
+  p {
+    margin: 1em 0;
+  }
+  
+  img {
+    max-width: 100%;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #111;
+    line-height: 125%;
+    margin-top: 2em;
+    font-weight: normal;
+  }
+  
+  h4, h5, h6 {
+    font-weight: bold;
+  }
+  
+  h1 {
+    font-size: 2.5em;
+  }
+  
+  h2 {
+    font-size: 2em;
+  }
+  
+  h3 {
+    font-size: 1.5em;
+  }
+  
+  h4 {
+    font-size: 1.2em;
+  }
+  
+  h5 {
+    font-size: 1em;
+  }
+  
+  h6 {
+    font-size: 0.9em;
+  }
+  
+  blockquote {
+    color: #666666;
+    margin: 0;
+    padding-left: 3em;
+    border-left: 0.5em #EEE solid;
+  }
+  
+  hr {
+    display: block;
+    height: 2px;
+    border: 0;
+    border-top: 1px solid #aaa;
+    border-bottom: 1px solid #eee;
+    margin: 1em 0;
+    padding: 0;
+  }
+  
+  pre, code, kbd, samp {
+    color: #000;
+    font-family: monospace, monospace;
+    _font-family: 'courier new', monospace;
+    font-size: 0.98em;
+  }
+  
+  pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  
+  b, strong {
+    font-weight: bold;
+  }
+  
+  dfn {
+    font-style: italic;
+  }
+  
+  ins {
+    background: #ff9;
+    color: #000;
+    text-decoration: none;
+  }
+  
+  mark {
+    background: #ff0;
+    color: #000;
+    font-style: italic;
+    font-weight: bold;
+  }
+  
+  sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+  
+  sup {
+    top: -0.5em;
+  }
+  
+  sub {
+    bottom: -0.25em;
+  }
+  
+  ul, ol {
+    margin: 1em 0;
+    padding: 0 0 0 2em;
+  }
+  
+  li p:last-child {
+    margin-bottom: 0;
+  }
+  
+  ul ul, ol ol {
+    margin: .3em 0;
+  }
+  
+  dl {
+    margin-bottom: 1em;
+  }
+  
+  dt {
+    font-weight: bold;
+    margin-bottom: .8em;
+  }
+  
+  dd {
+    margin: 0 0 .8em 2em;
+  }
+  
+  dd:last-child {
+    margin-bottom: 0;
+  }
+  
+  img {
+    border: 0;
+    -ms-interpolation-mode: bicubic;
+    vertical-align: middle;
+  }
+  
+  figure {
+    display: block;
+    text-align: center;
+    margin: 1em 0;
+  }
+  
+  figure img {
+    border: none;
+    margin: 0 auto;
+  }
+  
+  figcaption {
+    font-size: 0.8em;
+    font-style: italic;
+    margin: 0 0 .8em;
+  }
+  
+  table {
+    margin-bottom: 2em;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-spacing: 0;
+    border-collapse: collapse;
+  }
+  
+  table th {
+    padding: .2em 1em;
+    background-color: #eee;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+  }
+  
+  table td {
+    padding: .2em 1em;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    vertical-align: top;
+  }
+  
+  .author {
+    font-size: 1.2em;
+    text-align: center;
+  }
+  
+  @media only screen and (min-width: 480px) {
+    body {
+      font-size: 14px;
+    }
+  }
+  @media only screen and (min-width: 768px) {
+    body {
+      font-size: 16px;
+    }
+  }
+  @media print {
+    * {
+      background: transparent !important;
+      color: black !important;
+      filter: none !important;
+      -ms-filter: none !important;
+    }
+  
+    body {
+      font-size: 12pt;
+      max-width: 100%;
+    }
+  
+    a, a:visited {
+      text-decoration: underline;
+    }
+  
+    hr {
+      height: 1px;
+      border: 0;
+      border-bottom: 1px solid black;
+    }
+  
+    a[href]:after {
+      content: " (" attr(href) ")";
+    }
+  
+    abbr[title]:after {
+      content: " (" attr(title) ")";
+    }
+  
+    .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after {
+      content: "";
+    }
+  
+    pre, blockquote {
+      border: 1px solid #999;
+      padding-right: 1em;
+      page-break-inside: avoid;
+    }
+  
+    tr, img {
+      page-break-inside: avoid;
+    }
+  
+    img {
+      max-width: 100% !important;
+    }
+  
+    @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+  }
+  
+    @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+  }
+  
+    p, h2, h3 {
+      orphans: 3;
+      widows: 3;
+    }
+  
+    h2, h3 {
+      page-break-after: avoid;
+    }
+  }
+  </style>
+</head>
+<body>
 <h1 id="imgtool-imgtool---jpeg-photo-tool">imgtool Imgtool - JPEG Photo tool</h1>
 <h2 id="descrtiption">Descrtiption</h2>
 <p>imgtool is a tool for dating, renaming, organizing, resizing, rotating and thumbnailing images based on the information stored in their EXIF header. This is to aid in the processing and organizing of digital photography images.</p>
@@ -9,7 +349,6 @@
 <p><em>If an output directory is specified, and, no other renaming is done, for operations such as dating or resizing, the file is <strong>copied</strong> to the output directory instead of renaming.</em></p>
 <h2 id="digital-photography-images">Digital Photography Images</h2>
 <p>Files created by digital photography have a header built-in called <em>Exhangeabe Image Format</em> or EXIF (https://en.wikipedia.org/wiki/Exif) header. There is a lot of information that can be in this header that relates to the photograph, when it was taken, sometimes where it was taken, camera settings, camera model, etc. This tool extracts this information and uses it to create unique names for photography files, rotate them, etc.</p>
-<h2 id="table-of-contents">Table of Contents</h2>
 <ul>
 <li><a href="#usage">Usage</a>
 <ul>
@@ -31,8 +370,9 @@
 <li><a href="#warning">WARNING</a></li>
 <li><a href="#author">Author</a></li>
 <li><a href="#copyright">Copyright</a></li>
-<li><a href="#license">License</a> ## Usage</li>
+<li><a href="#license">License</a></li>
 </ul>
+<h2 id="usage">Usage</h2>
 <pre><code>usage: imgtool [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory]
                [-f format-string] [-i] [-n] [-p Pattern] [-q REQUIRED_TAG]
                [-r] [-t] [--thumb-dir directory] [-xt]
@@ -85,10 +425,7 @@
 <h4 id="resize">resize</h4>
 <p>-z geometry, --resize geometry</p>
 <h2 id="geometry">Geometry</h2>
-<p>Geometry can be specified as a percentage of the overall image or as a pair of width:height. Width and height are specified in pixels. If width is specified but no height, e.g., 1000: the image will be reized to a width of 1000px with a height calculated in relation to width to maintain the image aspect ratio. Conversely, height is specified without a width, e.g., :1000 will resize the image to 1000px high with a width calculated to maintain the aspect ratio. When the width and height are spcecified no attempt to maintain the aspect ratio is made.</p>
-<h2 id="order-of-operations">Order of operations</h2>
-<p>Each image processed, if the operations are specified, has their operations peformed in this order: 1. Image resize 2. Auto-rotation 3. Dating and/or Renaming 4. Thumbnail generation</p>
-<h2 id="automatic-image-naming">Automatic Image Naming</h2>
+<p>Geometry can be specified as a percentage of the overall image or as a pair of width:height. Width and height are specified in pixels. If width is specified but no height, e.g., 1000: the image will be reized to a width of 1000px with a height calculated in relation to width to maintain the image aspect ratio. Conversely, height is specified without a width, e.g., :1000 will resize the image to 1000px high with a width calculated to maintain the aspect ratio. When the width and height are spcecified no attempt to maintain the aspect ratio is made. ## Order of operations Each image processed, if the operations are specified, has their operations peformed in this order: 1. Image resize 2. Auto-rotation 3. Dating and/or Renaming 4. Thumbnail generation ## Automatic Image Naming</p>
 <p>Formatting filenames for automatic renaming is as follows: [@+]type.Tag#timefmt</p>
 <p>Tags starting with @ have their spaces replaced with periods (.), Tags starting with + do not have spaces replaced. There are two types of tags, File and Exif. File Tags are:</p>
 <pre><code>File.Name:  Filename of the image without extension
@@ -260,14 +597,7 @@ returns &#39;NIKON D3400&#39; </code></pre>
    where the effect of the O modifier is to use alternative numeric
    symbols (say, roman numerals), and that of the E modifier is to use a
    locale-dependent alternative representation.</code></pre>
-<p>(Taken from Linux strftime(3) manual page, from the Linux Man Pages Project, http://www.kernel.org/doc/man-pages)</p>
-<h2 id="some-tips">Some tips</h2>
-<ol style="list-style-type: decimal">
-<li>Always backup data!</li>
-<li>Before emplyoing this tool on a number of photos, be sure it will do what you want it to do using the -D or --dry-run option. This will tell you most of what operations are being done without actually doing them.</li>
-<li>When using EXIF tags for renaming files from multiple camera make/models, do not use vendor specific tags, e.g. Exif.NikonFi.FileNumber as these may not be consistent across those cameras even for the same manufacturer.</li>
-</ol>
-<h2 id="installation">Installation</h2>
+<p>(Taken from Linux strftime(3) manual page, from the Linux Man Pages Project, http://www.kernel.org/doc/man-pages) ## Some tips 1. Always backup data! 2. Before emplyoing this tool on a number of photos, be sure it will do what you want it to do using the -D or --dry-run option. This will tell you most of what operations are being done without actually doing them. 3. When using EXIF tags for renaming files from multiple camera make/models, do not use vendor specific tags, e.g. Exif.NikonFi.FileNumber as these may not be consistent across those cameras even for the same manufacturer. ## Installation</p>
 <h2 id="pre-requisites">Pre-requisites</h2>
 <p>imgtool requires the following python packages in order to work - pyexiv2 - https://github.com/escaped/pyexiv2 - Pillow - (pip install pillow)</p>
 <p>The standard modules used are: - os - OS Dependent interfaces - sys - System interfaces - datetime, time - Date and time manipulation and conversions - re - Regular expression library - fnmatch, glob2, shutil - File globbing, matching and copying.</p>
@@ -298,3 +628,5 @@ optional arguments:
 <p>Copyright 2018 Nicole Stevens</p>
 <h2 id="license">License</h2>
 <p>Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at <a href="http://www.apache.org/licenses/LICENSE-2.0" class="uri">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+</body>
+</html>

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+order="options geometry order-of-operations renaming tips install foot"
+for f in $order; do
+    cat "$f"
+done

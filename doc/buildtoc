@@ -1,5 +1,6 @@
 #!/bin/bash
 declare -i maxdepth=9999
+echo -e '## Table of Contents\n' >toc
 input="$1"
 [ -z $2 ] || maxdepth=$2
 cat "$input" | grep '^##' | while read l ; do 
