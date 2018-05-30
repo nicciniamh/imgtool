@@ -1,7 +1,0 @@
-## Order of operations
-Each image processed, if the operations are specified, has their operations
-peformed in this order:
-1. Image resize
-2. Auto-rotation
-3. Dating and/or Renaming
-4. Thumbnail generation
