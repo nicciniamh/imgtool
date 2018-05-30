@@ -5,6 +5,10 @@
 
 ### Other
 
+* Cleanup of doc tools, update README. [Nicole Stevens]
+
+* Updated Changelog. [Nicole Stevens]
+
 * Changed build process to use make(1) - not perfect yet. Docs are updated. [Nicole Stevens]
 
 * Added imgtool.html to doc section of installer. [Nicole Stevens]
