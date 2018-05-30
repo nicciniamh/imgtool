@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 generated = body toc options imgtool.1 imgtool.html readme-markdown.md
-docsrcs = geometry order-of-operations renaming tips install foot
+docsrcs = head geometry order-of-operations renaming tips install foot
 
 all: options readme-markdown.md imgtool.1 imgtool.html ../README.md ../imgtool.1 ../imgtool.html
 
@@ -9,7 +9,7 @@ imgtool.html: readme-markdown.md pandoc.css
 		pandoc -s -f markdown --to html --include-in-header=pandoc.css -o imgtool.html
 
 
-readme-markdown.md: head  body toc $(docsrcs)
+readme-markdown.md: $(docsrcs) $(generated)
 	cat head toc body  >readme-markdown.md
 
 imgtool.1: readme-markdown.md
@@ -24,6 +24,10 @@ options:
 	./optparse >options
 
 ../README.md: readme-markdown.md
+	#
+	# translate the top line from the markdown file that is used for man page generation
+	# to proper markdown format.
+	#
 	cat readme-markdown.md | sed -e 's/%/#/g' -e 's/(1)//g' -e 's/|//g' >../README.md
 
 ../imgtool.1: imgtool.1
