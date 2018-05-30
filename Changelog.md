@@ -5,6 +5,10 @@
 
 ### Other
 
+* Added information about genereated docs. [Nicole Stevens]
+
+* Updated Changelog. [Nicole Stevens]
+
 * Cleaned up folder content for documents. [Nicole Stevens]
 
 * On Github the doc directory was horribly messy. [Nicole Stevens]
