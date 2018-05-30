@@ -14,7 +14,7 @@
 },
 "doc":
 {
-    "source": "README.md",
+    "source": "imgtool.html",
     "dest": "doc",
     "mode": "0644",
     "default": "/usr/share/doc/imgtool"
