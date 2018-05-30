@@ -22,6 +22,14 @@ class sect:
         output.write('.SH {}\n'.format(self.title))
         output.write('{}\n'.format('^^'.join(self.content).replace('\n\n','%%').replace('^^',' ').replace('%%','\n\n')))
 
+def cleanupMarkDown(text):
+    r = r'\(https?://.*\)|\[.*\]'
+    res = re.findall(r,text)
+    if len(res) > 1:
+        text = text.replace(''.join(res),re.sub(r'[\(\)]','',res[1]))
+    text = re.sub(r'\> ','',text)
+    return text
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', type=str, default='Table of Contents', action='store',dest='ignore',
                     help='Sections in the markdown to ignore when writing manual page. Sections delimited with commas.',
@@ -50,6 +58,7 @@ ignoresects = args.ignore.split(',')
 for name in args.list:
     with open(name) as f:
         for l in f:
+            l = cleanupMarkDown(l)
             if l.startswith('# '):
                 title = l.replace('#','').strip()
             elif l.startswith('##'):
