@@ -1,2 +1,2 @@
-readme-markdown.md: head foot $(cat sections)
+readme-markdown.md: head foot $(cat sections) makereadme sections
 	./makereadme

@@ -63,11 +63,6 @@ rotate them, etc.
 - [Author](#author)
 - [Copyright](#copyright)
 - [License](#license)
-- [Issues](#issues)
-- [WARNING](#warning)
-- [Author](#author)
-- [Copyright](#copyright)
-- [License](#license)
 ## Usage
 
 ```
@@ -477,31 +472,4 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License. 
 You may obtain a copy of the License at [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-
-## Issues
-- The documentation has some missing parts from the auto-generated 
-stuff from reading the help output from imgtool. 
-- Not fuly tested, but working on it. 
-
-## WARNING
-
-This tool is ALPHA. I have tested it in a limited environment and was
-written to work with my photographs. It may even be destructive. Backing
-up data is always a good idea before employing automatic tools that can
-recurse directories. If you break something, you own the remaining
-pieces.
-
-## Author
-
-Nicole Stevens [@github](https://github.com/nicciniamh)
-
-## Copyright
-
-Copyright 2018 Nicole Stevens
-
-## License
-
-Licensed under the Apache License, Version 2.0 (the "License"); 
-you may not use this file except in compliance with the License. 
-You may obtain a copy of the License at [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
