@@ -5,6 +5,10 @@
 
 ### Other
 
+* Updated broken build process where HTML had no body content. [Nicole Stevens]
+
+* Updated Changelog. [Nicole Stevens]
+
 * Added information about genereated docs. [Nicole Stevens]
 
 * Updated Changelog. [Nicole Stevens]
