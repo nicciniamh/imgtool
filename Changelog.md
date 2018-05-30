@@ -5,6 +5,14 @@
 
 ### Other
 
+* Doc sources comiited. [Nicole Stevens]
+
+* Updated version to 0.1.8.2 Fixed bug in thumbnailing where copies of images were made in thumbnail directory when a different thumbnail directory. Changed debugging to include file/line of logging messages. [Nicole Stevens]
+
+* Updated docs with issues section. [Nicole Stevens]
+
+* Updated Changelog. [Nicole Stevens]
+
 * Updated version to 0.1.8.1 Fixed bug in geometry checking when only one cardinal was defined. Fixed bug where EXIF thumbnails were not being written to thumbnail directory Fixed bug where the thumbnail directory was not being created if it didn't exist. [Nicole Stevens]
 
 * Updated changelog. [Nicole Stevens]
