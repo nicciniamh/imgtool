@@ -5,6 +5,10 @@
 
 ### Other
 
+* Made some markdown more link friendly, updated markdown2man conversion to remove link formatting. Updated Readme and manual page. [Nicole Stevens]
+
+* Updated changelog. [Nicole Stevens]
+
 * Doc sources comiited. [Nicole Stevens]
 
 * Updated version to 0.1.8.2 Fixed bug in thumbnailing where copies of images were made in thumbnail directory when a different thumbnail directory. Changed debugging to include file/line of logging messages. [Nicole Stevens]
