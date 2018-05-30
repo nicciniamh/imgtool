@@ -10,14 +10,13 @@ echo '```'>>options
     echo "Adding ${t}" >&2
     cat "$f"
     echo
-done) >sec-content
-echo -e '## Table of Contents\n' >bot-readme
-./buildtoc sec-content 2 >>bot-readme 
-echo >>bot-readme
-cat sec-content >>bot-readme
-cat head bot-readme >readme-markdown
-rm options sec-content bot-readme
-./markdown2man -n imgtool -t 'imgtool - Photo Image Processing Tool' -o imgtool.1 readme-markdown
-cp readme-markdown ../README.md
+done) >bot-readme
+cat foot >>bot-readme
+echo -e '## Table of Contents\n' >toc
+./buildtoc bot-readme 2 >>toc
+cat head toc bot-readme >readme-markdown.md
+cat head bot-readme | pandoc -f markdown --standalone --to man  -o imgtool.1
+cat readme-markdown.md | sed -e 's/%/#/g' -e 's/(1)//g' -e 's/|//g' >../README.md
 cp imgtool.1 ..
+rm -f toc options sec-content bot-readme
 

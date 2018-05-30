@@ -1,4 +1,4 @@
-# Imgtool - JPEG Photo tool
+% imgtool(1) || Imgtool - JPEG Photo tool
 
 ## Descrtiption 
 
@@ -9,7 +9,7 @@ photography images.
 
 ## Background
 
-I have a fairly large collection of digital photos I have taken with my
+With a fairly large collection of digital photos I have taken with my
 phone and three different Nikon cameras.
 
 In an effort to have unqique file names, I wrote this tool. I also added
