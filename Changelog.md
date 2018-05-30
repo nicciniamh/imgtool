@@ -5,6 +5,10 @@
 
 ### Other
 
+* Added html version of readme for documentation and added to installer. Fixed doc build issue where foot sections was duplicated. [Nicole Stevens]
+
+* Updated Changelog. [Nicole Stevens]
+
 * Changed document build process to use pandoc to create manual page. File cleanup. [Nicole Stevens]
 
 * Another minor docfix. [Nicole Stevens]
