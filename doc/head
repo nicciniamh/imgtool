@@ -30,7 +30,11 @@ directory. The naming can have embedded exif data just like the format
 option. This would allow creation of a directory structure based on
 image data. E.g., `~/Photos/%Y-%m-%d .` will create a tree of
 directories based on the EXIF (or file) Date/Time. Any subdirectory
-trees are maintaine.
+trees are maintained.
+
+*If an output directory is specified, and, no other renaming is done,
+for operations such as dating or resizing, the file is **copied** to
+the output directory instead of renaming.*
 
 ## Digital Photography Images
 
