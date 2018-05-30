@@ -1,0 +1,99 @@
+#!/usr/bin/python
+import sys, re
+
+class htmlrow:
+    def __init__(self,line, rid=None, rclass=None, cclass=None):
+        self.cols = line.split('|')
+        for i in range(0,len(self.cols)):
+            self.cols[i] = self.cols[i].strip()
+        if rid:
+            self.rid = 'ID="{}"'.format(rid)
+        else:
+            self.rid = ""
+        if rclass:
+            self.rclass = 'CLASS="{}"'.format(rclass)
+        else:
+            self.rclass = ""
+        if cclass:
+            self.cclass = 'CLASS="{}"'.format(cclass)
+        else:
+            self.cclass = ""
+
+    def render(self,out):
+        out.write('<TR {} {}>'.format(self.rid,self.rclass))
+        for c in self.cols:
+            out.write('<TD {}>{}</TD>'.format(self.cclass,c))
+        out.write('</TR>\n')
+
+class htmltable:
+    def __init__(self, tid=None, tclass=None):
+        if tid:
+            self.tid = 'ID="{}"'.format(tid)
+        else:
+            self.tid = ""
+        if tclass:
+            self.tclass = 'CLASS="{}"'.format(tclass)
+        else:
+            self.tclass = ""
+
+        self.rows = []
+
+    def append(self,line):
+        self.rows.append(row(line))
+
+    def render(self,out):
+        out.write('<TABLE {} {}>\n'.format(self.tid,self.tclass))
+        for row in self.rows:
+            row.render(out)
+        out.write('</TABLE>\n')
+
+class row:
+    def __init__(self,line):
+        self.cols = line.split('|')
+        self.line = re.sub(' +',' ',line).strip()
+        
+        for i in range(0,len(self.cols)):
+            self.cols[i] = self.cols[i].strip()
+
+        self.cap = ''
+        for s in line.split(','):
+            if s.strip().startswith('--'):
+                s = s.strip().split(' ')[0]
+                self.cap = re.sub('^--','',s)
+                break
+
+    def render(self,out,hl=1):
+        if self.cap:
+            for i in range(0,hl):
+                out.write('#')
+            out.write(' {}\n'.format(self.cap))
+        out.write('{}\n'.format(self.line))
+        out.write('\n')
+
+class table:
+    def __init__(self, heading, hl=1):
+        self.rows = []
+        self.cap = heading
+        self.hl = hl
+
+    def append(self,line):
+        self.rows.append(row(line))
+
+    def render(self,out):
+        for i in range(0,self.hl):
+            out.write('#')
+        out.write(' {}\n\n'.format(self.cap))
+        for row in self.rows:
+            row.render(out,self.hl+1)
+            out.write('\n')
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        fin = sys.stdin
+    else:
+        fin = open(sys.argv[1])
+    tbl = table('Program Options',3)
+    for line in fin:
+        tbl.append(line)
+
+    tbl.render(sys.stdout)

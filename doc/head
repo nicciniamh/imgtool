@@ -1,0 +1,48 @@
+% imgtool(1) || Imgtool - JPEG Photo tool
+
+## Descrtiption 
+
+imgtool is a tool for dating, renaming, organizing, resizing, rotating
+and thumbnailing images based on the information stored in their EXIF
+header. This is to aid in the processing and organizing of digital
+photography images.
+
+## Background
+
+With a fairly large collection of digital photos I have taken with my
+phone and three different Nikon cameras.
+
+In an effort to have unqique file names, I wrote this tool. I also added
+the functionality of a couple other operations I frequently do in post-
+processing.
+
+A number of graphics tools will honor the Orientation tag in an image,
+however, on occasion, I find I need to manually rotate an image. More
+commonly, images get resized and renamed. Sometimes other tools are
+employed which modify the timestamp of the file, on the files system,
+which can disrupt sorting. (I use a date descending order in my file
+manager to show me the most recent photos) The default operation of
+imgtool is to set the timestamp of the files it finds with the date
+stamp in the photo's EXIF header.
+
+Files can be moved (or copied if to a different device) to another
+directory. The naming can have embedded exif data just like the format
+option. This would allow creation of a directory structure based on
+image data. E.g., `~/Photos/%Y-%m-%d .` will create a tree of
+directories based on the EXIF (or file) Date/Time. Any subdirectory
+trees are maintained.
+
+*If an output directory is specified, and, no other renaming is done,
+for operations such as dating or resizing, the file is **copied** to
+the output directory instead of renaming.*
+
+## Digital Photography Images
+
+Files created by digital photography have a header built-in called
+*Exhangeabe Image Format* or EXIF (https://en.wikipedia.org/wiki/Exif)
+header. There is a lot of information that can be in this header that
+relates to the photograph, when it was taken, sometimes where it was
+taken, camera settings, camera model, etc. This tool extracts this
+information and uses it to create unique names for photography files,
+rotate them, etc.
+

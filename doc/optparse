@@ -1,0 +1,7 @@
+#!/bin/bash
+echo 
+echo -e "## Usage\n" 
+echo '```' 
+../imgtool -h | grep '\[' | grep -v '@'
+echo '```'
+../imgtool -h | grep '^[ ]*-' | sort | grep -v '-help' | ./splitopts 

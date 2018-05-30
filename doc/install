@@ -1,0 +1,42 @@
+## Installation
+
+## Pre-requisites
+imgtool requires the following python packages in order to work
+- pyexiv2 -   https://github.com/escaped/pyexiv2
+- Pillow -    (pip install pillow)
+
+The standard modules used are:
+- os  -               OS Dependent interfaces
+- sys -               System interfaces
+- datetime, time -    Date and time manipulation and conversions
+- re -                Regular expression library
+- fnmatch, glob2, shutil - File globbing, matching and copying.
+
+This tool was developed on Linux. While untested it may work on 
+OSX and Windows provided these libraries are installed.
+
+The installer script will install the files, based on what is
+in installer.json, to appropriate directories with the specified
+mode. 
+
+### Running the installer script:
+```
+usage: installer [-h] [--bindir program-dir] [--docdir doccument-dir]
+                 [--mandir man-dir] [--libdir library-dir]
+                 [--sources source-list]
+
+optional arguments:
+  -h, --help              show this help message and exit
+  --bindir program-dir    Directory to store executable(s)
+  --docdir doccument-dir  Directory to store document(s)
+  --mandir man-dir        Directory to store manual page(s)
+  --libdir library-dir    Directory to store library files(s) (Not used for this tool)
+```
+
+Running installer without arguments will install the program to 
+/usr/bin, the manual page to /usr/man/man1, and this file to
+/usr/share/doc/imgtool. You must have appropriate access rights, 
+e.g.:, sudo, to perform this install. The installer can write to
+other directories. Specifying 'none' as the deestination will prevent 
+that part from being copied.
+

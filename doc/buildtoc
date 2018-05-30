@@ -1,0 +1,16 @@
+#!/bin/bash
+declare -i maxdepth=9999
+echo -e '## Table of Contents\n' >toc
+input="$1"
+[ -z $2 ] || maxdepth=$2
+cat "$input" | grep '^##' | while read l ; do 
+    c=$(echo "$l" | grep '^##' | awk -F'#' '{print NF-3}')
+    link="#$(echo "$l" | sed -e 's/#//g' -e 's/^ //' -e 's/ /-/g'|tr [A-Z] [a-z])"
+    subj="$(echo "$l" | sed -e s'/#//g' -e 's/^ //g')"
+    if ((c < maxdepth )) ; then
+        for i in `seq 1 $c`; 
+            do printf "    "
+        done
+        echo "- [${subj}](${link})"
+    fi
+done
