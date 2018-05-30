@@ -61,6 +61,7 @@ rotate them, etc.
 - [Author](#author)
 - [Copyright](#copyright)
 - [License](#license)
+- [About this Document](#about-this-document)
 
 ## Usage
 
@@ -465,3 +466,6 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License. 
 You may obtain a copy of the License at [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
+## About this Document
+This document was automatically generated using tools in the doc/ directory. Please see the [README.md](doc/README.md) 
+in that directory for information and build procedures. 
