@@ -5,6 +5,12 @@
 
 ### Other
 
+* Changed build process to use make(1) - not perfect yet. Docs are updated. [Nicole Stevens]
+
+* Added imgtool.html to doc section of installer. [Nicole Stevens]
+
+* Updated Changelog. [Nicole Stevens]
+
 * Added html version of readme for documentation and added to installer. Fixed doc build issue where foot sections was duplicated. [Nicole Stevens]
 
 * Updated Changelog. [Nicole Stevens]
