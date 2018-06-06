@@ -5,6 +5,10 @@
 
 ### Other
 
+* Changed option processing so program options can be dumped in pickle format for other python tools to read and process. Got rid of -i|--ignore-no-exif to the -s|--set options flag to allow for setting more than one ignore or set item. See docs. Updated docs, too! [Nicole Stevens]
+
+* Updated Changelog. [Nicole Stevens]
+
 * Updated broken build process where HTML had no body content. [Nicole Stevens]
 
 * Updated Changelog. [Nicole Stevens]
