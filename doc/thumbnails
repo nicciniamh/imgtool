@@ -1,0 +1,17 @@
+## Thumbnails
+Thumbnails may be created or extracted from the EXIF data, when present. 
+
+### Creating thumbnails from image
+When generating thumbnails from image data, they are written to the 
+diretory specified with the --thumb-dir option or to the same path
+where the file is ultimately written using the pattern 
+filename-thumb.png.
+
+### Creating thumbnails from EXIF data
+Thumbnails are often stored in the images EXIF header. These files are 
+written with the same rule for paths of thumbnails above, but, they are
+written as JPEG images. Unless --exif-rotate-thumb is set, the thubnail
+is not rotated. If -a or --rotation-angle is set then that angle is used
+to rotate images otherwise the Exif.Image.Orientation data is used and 
+if appropriate the thumbnail will be rotated.
+

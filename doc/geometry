@@ -8,3 +8,4 @@ maintain the image aspect ratio. Conversely, height is specified without
 a width, e.g., :1000 will resize the image to 1000px high with a width
 calculated to maintain the aspect ratio.  When the width and height are
 spcecified no attempt to maintain the aspect ratio is made.
+

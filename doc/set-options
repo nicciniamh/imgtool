@@ -1,0 +1,16 @@
+
+## Setting Options
+Setting options with -s or --set changes some program operations.
+Each option can be toggled. The format of these options are:
+>option-key[:option-key...]
+
+Current options are:
+
+### ignore-processed
+    Ignore files already processed by imgtool. Default is to ignore.
+
+### set-processed
+    Set the processed flag in the image header. Default is to set the flag.
+
+### ignore-no-exif
+    Ignore files without an EXIF header. Default is to process.

@@ -355,7 +355,18 @@
 <li><a href="#program-options">Program Options</a></li>
 </ul></li>
 <li><a href="#geometry">Geometry</a></li>
+<li><a href="#thumbnails">Thumbnails</a>
+<ul>
+<li><a href="#creating-thumbnails-from-image">Creating thumbnails from image</a></li>
+<li><a href="#creating-thumbnails-from-exif-data">Creating thumbnails from EXIF data</a></li>
+</ul></li>
 <li><a href="#order-of-operations">Order of operations</a></li>
+<li><a href="#setting-options">Setting Options</a>
+<ul>
+<li><a href="#ignore-processed">ignore-processed</a></li>
+<li><a href="#set-processed">set-processed</a></li>
+<li><a href="#ignore-no-exif">ignore-no-exif</a></li>
+</ul></li>
 <li><a href="#automatic-image-naming">Automatic Image Naming</a>
 <ul>
 <li><a href="#splitting-strings-in-tags">Splitting strings in tags</a></li>
@@ -374,11 +385,12 @@
 <li><a href="#about-this-document">About this Document</a></li>
 </ul>
 <h2 id="usage">Usage</h2>
-<pre><code>usage: imgtool [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory]
-               [-f format-string] [-i] [-n] [-p Pattern] [-q REQUIRED_TAG]
-               [-r] [-t] [--thumb-dir directory] [-xt]
+<pre><code>usage: imgtool [-h] [-a ROTANGLE] [-R] [-c] [-D] [-d directory] [-e]
+               [--exif-rotate-thumb] [-f format-string] [-n] [-p Pattern]
+               [-q REQUIRED_TAG] [-r] [-t] [-s SET] [--thumb-dir directory]
                [--thumb-geometry geometry] [-v] [-V] [-z geometry] [--debug]
-               [--dumpkeys] [--help-geometry] [--help-format]
+               [--dumpkeys] [--help-geometry] [--help-format] [--help-options]
+               [---dumpargs]
                [PATH [PATH ...]]</code></pre>
 <h3 id="program-options">Program Options</h3>
 <h4 id="rotation-angle">rotation-angle</h4>
@@ -391,12 +403,16 @@
 <p>-D, --dry_run Dry run: show what will be done without actually doing</p>
 <h4 id="debug">debug</h4>
 <p>--debug Enable debugging messages</p>
+<h4 id="dumpargs">-dumpargs</h4>
+<p>---dumpargs Pyton Pickle formatted dump of program arguments</p>
 <h4 id="dumpkeys">dumpkeys</h4>
 <p>--dumpkeys Dump all exif tag keys for first file and exit.</p>
+<h4 id="exif-extract-thumb">exif-extract-thumb</h4>
+<p>-e, --exif-extract-thumb</p>
+<h4 id="exif-rotate-thumb">exif-rotate-thumb</h4>
+<p>--exif-rotate-thumb Rotate EXIF thumnail(s) by EXIF orientation or by</p>
 <h4 id="format">format</h4>
 <p>-f format-string, --format format-string</p>
-<h4 id="ignore-no-exif">ignore-no-exif</h4>
-<p>-i, --ignore-no-exif Ignore that a file has no EXIF data. Default is to</p>
 <h4 id="no-clobber">no-clobber</h4>
 <p>-n, --no-clobber Do not overwrite existing files. Files will be named</p>
 <h4 id="pattern">pattern</h4>
@@ -421,12 +437,28 @@
 <p>-v, --verbose Describe what is being done.</p>
 <h4 id="version">version</h4>
 <p>-V, --version Show version information and exit.</p>
-<h4 id="exif-extract-thumb">exif-extract-thumb</h4>
-<p>-xt, --exif-extract-thumb</p>
 <h4 id="resize">resize</h4>
 <p>-z geometry, --resize geometry</p>
 <h2 id="geometry">Geometry</h2>
-<p>Geometry can be specified as a percentage of the overall image or as a pair of width:height. Width and height are specified in pixels. If width is specified but no height, e.g., 1000: the image will be reized to a width of 1000px with a height calculated in relation to width to maintain the image aspect ratio. Conversely, height is specified without a width, e.g., :1000 will resize the image to 1000px high with a width calculated to maintain the aspect ratio. When the width and height are spcecified no attempt to maintain the aspect ratio is made. ## Order of operations Each image processed, if the operations are specified, has their operations peformed in this order: 1. Image resize 2. Auto-rotation 3. Dating and/or Renaming 4. Thumbnail generation ## Automatic Image Naming</p>
+<p>Geometry can be specified as a percentage of the overall image or as a pair of width:height. Width and height are specified in pixels. If width is specified but no height, e.g., 1000: the image will be reized to a width of 1000px with a height calculated in relation to width to maintain the image aspect ratio. Conversely, height is specified without a width, e.g., :1000 will resize the image to 1000px high with a width calculated to maintain the aspect ratio. When the width and height are spcecified no attempt to maintain the aspect ratio is made.</p>
+<h2 id="thumbnails">Thumbnails</h2>
+<p>Thumbnails may be created or extracted from the EXIF data, when present.</p>
+<h3 id="creating-thumbnails-from-image">Creating thumbnails from image</h3>
+<p>When generating thumbnails from image data, they are written to the diretory specified with the --thumb-dir option or to the same path where the file is ultimately written using the pattern filename-thumb.png.</p>
+<h3 id="creating-thumbnails-from-exif-data">Creating thumbnails from EXIF data</h3>
+<p>Thumbnails are often stored in the images EXIF header. These files are written with the same rule for paths of thumbnails above, but, they are written as JPEG images. Unless --exif-rotate-thumb is set, the thubnail is not rotated. If -a or --rotation-angle is set then that angle is used to rotate images otherwise the Exif.Image.Orientation data is used and if appropriate the thumbnail will be rotated.</p>
+<h2 id="order-of-operations">Order of operations</h2>
+<p>Each image processed, if the operations are specified, has their operations peformed in this order: 1. Image resize 2. Auto-rotation 3. Dating and/or Renaming 4. Thumbnail generation</p>
+<h2 id="setting-options">Setting Options</h2>
+<p>Setting options with -s or --set changes some program operations. Each option can be toggled. The format of these options are: &gt;option-key[:option-key...]</p>
+<p>Current options are:</p>
+<h3 id="ignore-processed">ignore-processed</h3>
+<pre><code>Ignore files already processed by imgtool. Default is to ignore.</code></pre>
+<h3 id="set-processed">set-processed</h3>
+<pre><code>Set the processed flag in the image header. Default is to set the flag.</code></pre>
+<h3 id="ignore-no-exif">ignore-no-exif</h3>
+<pre><code>Ignore files without an EXIF header. Default is to process.</code></pre>
+<h2 id="automatic-image-naming">Automatic Image Naming</h2>
 <p>Formatting filenames for automatic renaming is as follows: [@+]type.Tag#timefmt</p>
 <p>Tags starting with @ have their spaces replaced with periods (.), Tags starting with + do not have spaces replaced. There are two types of tags, File and Exif. File Tags are:</p>
 <pre><code>File.Name:  Filename of the image without extension

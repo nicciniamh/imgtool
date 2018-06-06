@@ -1,7 +1,7 @@
 SHELL := /bin/bash
-generated = body toc options readme-markdown.md
+generated = body toc options 
 docgen = imgtool.1 imgtool.html imgtool.md 
-docsrcs = head geometry order-of-operations renaming tips install foot
+docsrcs = head geometry thumbnails order-of-operations renaming tips install foot set-options
 
 all: options readme-markdown.md imgtool.1 imgtool.html ../README.md ../imgtool.1 ../imgtool.html ../imgtool.md
 

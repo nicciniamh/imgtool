@@ -1,9 +1,11 @@
 #!/usr/bin/env python2
-import os, sys, datetime, time, fnmatch, glob2, re, pyexiv2, shutil, inspect
+import os, sys, datetime, time, fnmatch, glob2, re, pyexiv2, shutil, inspect, pickle
 from PIL import Image
 from PIL import ExifTags
 from argparse import ArgumentParser
-toolversion = '0.1.8.2'
+toolversion = '0.1.8.3'
+
+IMGCOMMENT = 'imgtool'
 
 description = """
 Imgtool version {} - Copyright 2018 Nicole Stevens - Image manipulation tool:  
@@ -95,6 +97,13 @@ Time formatting, using the EIXF header's image time, is formatted with
 strftime formatting. See strftime(3).
 
 """
+optionHelpText = """
+Setting Options
+Set options to change program operation. Each option can be toggled. The format is
+    option-key[:option-key...]
+
+Current options are:
+"""
 
 progwarning = """
 WARNING: This tool was written to work with my photographs. It may even
@@ -109,6 +118,35 @@ recurse = False
 rename = False
 dry = True
 logShowCaller = True
+
+class ourParser(ArgumentParser):
+    def __init__(self, *args,**kwargs):
+        self.keytab = {}
+        ArgumentParser.__init__(self,*args, **kwargs)
+
+    def add_argument(self, *args, **kwargs):
+        for a in args:
+            if a.startswith('--'):
+                if a.startswith('---'):
+                    continue
+                if a.startswith('--help'):
+                    continue
+                atype = str
+                areq = False
+                ahelptxt=''
+                if 'type' in kwargs:
+                    atype = kwargs['type']
+                if 'help' in kwargs:
+                    ahelptxt = kwargs['help']
+                if 'action' in kwargs:
+                    if kwargs['action'].lower() == 'store':
+                        areq = True
+                self.keytab[a] = {'type': atype, 'areq': areq, 'ahelp': ahelptxt}
+        ArgumentParser.add_argument(self, *args, **kwargs)
+
+    def dumpargs(self):
+        print pickle.dumps(self.keytab)
+
 
 class log:
     def __init__(self):
@@ -153,6 +191,9 @@ class fileExif:
         self._renoxlt = self._renospc.replace('@','+')
 
         self.timeformat = timeformat
+        self.reset(file)
+
+    def reset(self,file):
         try:
             self.mtime = os.stat(file).st_mtime
             self.fileDate = self.mtime
@@ -193,35 +234,30 @@ class fileExif:
             return self.fileInfo[tag]
         return ''
 
+    def __get_exif_rotation_angle(self):
+        degrees = {3: 180, 6: 270, 8: 90}
+        if self.exif is None:
+            return None
+        if self.exif['Exif.Image.Orientation'].value in degrees:
+            return degrees[self.exif['Exif.Image.Orientation'].value]
+        return None
+
+
     def adjustOrientation(self,**kwargs):
         rot = None
         if 'angle' in kwargs:
             rot = kwargs['angle']
-        if not rot:
-            degrees = {3: 180, 6: 270, 8: 90}
-            if self.exif is None:
-                if verbose:
-                    logger('INFO','Not rotating image {}: No EXIF data.'.format(self.file))
-                return
+        else:
+            rot = sef.__get_exif_rotation_angle()
 
-            try:
-                if self.exif['Exif.Image.Orientation'].value in degrees:
-                    image = Image.open(self.file)
-                else:
-                    if verbose:
-                        logger('INFO','Not rotating image, {}, Cannot make sense of EXIF Data.'.format(self.file,self.exif['Exif.Image.Orientation'].value))
-                rot = degrees[self.exif['Exif.Image.Orientation'].value]
-
-            except Exception as e:
-                raise IOError('Cannot rotate image {}: {}'.format(self.file,e))
         try:
-            if not rot:
-                logger('INFO','Cannot get rotation angle.')
+            if not rot or rot == 1:
+                logger('INFO','Will not rotate image, n orientation tag or orientation is 1.')
                 return
-
             if verbose:
                 logger('INFO','Rotate image {} by {} degrees'.format(self.file,rot))
             if not dry:
+                image = Image.open(self.file)
                 image=image.rotate(rot, expand=True)
                 image.save(self.file)
                 self.exif['Exif.Image.Orientation'].value = 1
@@ -301,7 +337,16 @@ class fileExif:
                 os.makedirs(dir)
             t.save(fname)
 
-    def getExifThumb(self, fname, thumbdir=False):
+    def getExifThumb(self, fname, thumbdir=False, **kwargs):
+        if 'rotate' in kwargs:
+            if kwargs['rotate']:
+                if not 'rotangle' in kwargs:
+                    rot = __get_exif_rotation_angle()
+                else:
+                    rot = kwargs['rotangle']
+        else:
+            rot = 1
+
         [dir,name] = os.path.split(fname)
         if not dir or len(dir) < 1:
             dir = '.'
@@ -320,6 +365,13 @@ class fileExif:
             if not os.path.exists(dir):
                 os.makedirs(dir)
             t.write_to_file(fname)
+            if rot and rot != 1:
+                if verbose:
+                    logger('INFO','Rotating image by {} degrees'.format(rot))
+                if not Dry:
+                    image = Image.open(fname)
+                    image=image.rotate(rot, expand=True)
+                    image.save(fname)
 
 
     def tag(self,tag,_type = str):
@@ -514,14 +566,6 @@ def getFileList(dir,recurse,pat):
                     flist.append(os.path.join(root,fname))
     return flist
 
-def geometryHelp():
-    parser.print_help()
-    print geometry_help
-
-def formatHelp():
-    parser.print_help()
-    print format_help
-
 def checkGeometry(geometry):
     try:
         if '%' in geometry:
@@ -537,11 +581,11 @@ def checkGeometry(geometry):
     return geometry
 
 if __name__ == '__main__':
-    try:
+#    try:
         globPat = '*.[Jj][Pp][Gg]'
 
         cwd = os.getcwd()
-        parser = ArgumentParser(description=description, epilog=progwarning)
+        parser = ourParser(description=description, epilog=progwarning)
         parser.add_argument("-a", "--rotation-angle", dest="rotangle", type=int, default=None, action='store',
                             help='Specify angle for rotating images. Ignores EXIF data.')
         parser.add_argument("-R", "--recurse", dest="recurse", default = False, action='store_true',
@@ -552,10 +596,12 @@ if __name__ == '__main__':
                             help="Dry run: show what will be done without actually doing it. (sets verbose too.)")
         parser.add_argument('-d', '--output-directory', dest='outdir', action='store', type=str, default=None, metavar='directory',
                             help='When renaming, files are moved or copied to the destination directoy maintain their directory tree when recursive. Formatting of ExifTags is allowed. See --help-format')
+        parser.add_argument('-e', '--exif-extract-thumb',dest='extract_thumb', default=False,action='store_true',
+                            help='Extract thumbnail from EXIF data and write using thumbnail rules.')
+        parser.add_argument('--exif-rotate-thumb', dest='erotate', default=False, action='store_true',
+                            help='Rotate EXIF thumnail(s) by EXIF orientation or by rotation angle set with -a or --rotation-angle')
         parser.add_argument('-f', '--format', action='store', dest='timeformat', default=defaultTimeFormat,
                             metavar='format-string',help=timeformatHelp)
-        parser.add_argument('-i','--ignore-no-exif', action='store_true', dest='ignore', default=False,
-                            help='Ignore that a file has no EXIF data. Default is to skip files without EXIF data.')
         parser.add_argument('-n', '--no-clobber', action='store_true', dest='noclobber', default=False,
                             help='Do not overwrite existing files. Files will be named as "newname (n).ext" where n is a number indicating the number of files with the new name. Similar to other file renaming operations')
         parser.add_argument('-p', '--pattern', action='store', dest='pat', default=None,
@@ -566,10 +612,10 @@ if __name__ == '__main__':
                             help="Automatically rotate images.")
         parser.add_argument('-t', '--thumbnail', action='store_true', dest='genthumbs', default=False, 
                             help='Generate thumbnails in the same output path. Use --thumb-geometry to override default of 96x96, use --thumb-dir to override output directory.')
+        parser.add_argument('-s','--set', action='store', default='', type=str, dest='set',
+                            help='Set processing options. see --help-options')
         parser.add_argument('--thumb-dir',action='store', default=None, dest='thumbdir', metavar='directory',
                             help='Override thumbnail output directory.')
-        parser.add_argument('-xt', '--exif-extract-thumb',dest='extract_thumb', default=False,action='store_true',
-                            help='Extract thumbnail from EXIF data and write using thumbnail rules.')
         parser.add_argument('--thumb-geometry',action='store', default=None, dest='thumbgeo', metavar='geometry',
                             help='Override thumbnail size with geometry, see --help-geometry')
         parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False,
@@ -585,10 +631,51 @@ if __name__ == '__main__':
                             help='Show additional help on GEOMETRY and exit.')
         parser.add_argument('--help-format', action="store_true", dest="fmthelp", default=False,
                             help='Show help on formatting names for automatic renaming')
+        parser.add_argument('--help-options', action="store_true", dest="showOptionHelp", default=False,
+                            help='Show help on setting options')
         parser.add_argument('list', metavar='PATH', type=str, nargs='*',
                             help='File(s) or sub-directories to process')
+        parser.add_argument('---dumpargs',dest='dumpargs', action='store_true',default=False,
+                            help='Pyton Pickle formatted dump of program arguments allowed')
 
         args = parser.parse_args()
+        options = {
+            'ignore-no-exif':   {'value': False, 'help': 'Ignore files without an EXIF header. Default is to process.'},
+            'ignore-processed': {'value': True,  'help': 'Ignore files already processed by imgtool. Default is to ignore.'},
+            'set-processed':    {'value': True,  'help': 'Set the processed flag in the image header. Default is to set the flag.'}
+        }
+
+        def geometryHelp():
+            parser.print_help()
+            print geometry_help
+
+        def formatHelp():
+            parser.print_help()
+            print format_help
+
+        def optionHelp():
+            print optionHelpText
+            for k in options:
+                print '    {:20s}{}'.format(k,options[k]['help'])
+            print ''
+
+       
+        if args.showOptionHelp:
+            parser.print_help()
+            optionHelp()
+            sys.exit(0) 
+
+        if len(args.set):
+            keys = args.set.lower().split(':')
+            for k in keys:
+                if k not in options:
+                    error('option {} is not valid')
+                    optionHelp()
+                    sys.exit(1)
+
+        if args.dumpargs:
+            parser.dumpargs()
+            sys.exit(1)
 
         if args.dispversion:
             print versinfo.format(toolversion)
@@ -677,15 +764,21 @@ if __name__ == '__main__':
                 dir = os.path.dirname(file)
                 fname = os.path.basename(file) 
                 exif = fileExif(file,args.timeformat,required_tag=args.required_tag)
-                if not args.ignore and not exif.exif:
+                if not options['ignore-no-exif']['value'] and not exif.exif:
                     if verbose:
                         logger('INFO','Skipping file {}, no EXIF data'.format(file))
+                    continue
+                if options['ignore-processed']['value'] and exif.exif.comment == IMGCOMMENT:
+                    if verbose:
+                        logger('INFO','Skipping file {}, EXIF data reports file proccessed'.format(file))
                     continue
                 if args.resize:
                     exif.resize(geoSpec)
                 if args.rotate:
                     exif.adjustOrientation(angle=args.rotangle)
                 newname = setFileInfo(dir,fname,exif,rename,args.outdir,args.noclobber)
+                if newname != fname:
+                    exif.reset(newname)
                 if args.genthumbs:
                     if newname:
                         exif.genThumbFile(newname,thumbgeo,thumbdir)
@@ -695,6 +788,12 @@ if __name__ == '__main__':
                     if newname:
                         exif.getExifThumb(newname,thumbdir)
                     else:
-                        exif.getExifThumb(file,thumbdir)
-    except Exception as e:
-        error('A runtime error has ocurred and operations cannot continue. {}'.format(e))
+                        exif.getExifThumb(file,thumbdir, rotangle=args.rotangle, rotate=args.etrotate)
+                if options['set-processed']['value']:
+                    if verbose:
+                        logger('INFO','Setting processed flag (exif.comment) on {} to {}'.format(exif.file, IMGCOMMENT))
+                    exif.exif.comment = IMGCOMMENT
+                    exif.exif.write()
+
+#    except Exception as e:
+#        error('A runtime error has ocurred and operations cannot continue. {}'.format(e))
