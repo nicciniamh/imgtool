@@ -194,6 +194,7 @@ class fileExif:
         self.reset(file)
 
     def reset(self,file):
+        debug('fileExif.reset(): newfile is {}'.format(file))
         try:
             self.mtime = os.stat(file).st_mtime
             self.fileDate = self.mtime
@@ -515,10 +516,6 @@ def setFileInfo(path,fname,exif,rename,outdir=None,noclobber=False):
                     except Exception as e:
                         error("Error renaming file {} to {}: {}".format(fname,newname,e))
                         raise e
-    if dry or verbose:
-        if info == '':
-            info = 'No Action'
-        logger('INFO','File {}: {}'.format(fname,info))
     if newname:
         return newname
     else:
@@ -538,10 +535,12 @@ def docopy(src,dst,noclobber=False,ftime=None,**kwargs):
         fn = fn + 1 
         debug('Attempting unique name {}'.format(dst))
 
-    if not os.path.exists(newdir):
-        os.makedirs(newdir)
-    if not os.path.exists(newdir):
-        raise RuntimeError('Cannot create new path {}'.format(newdir))
+    if newdir:
+        if not os.path.exists(newdir):
+            debug('Attempting to make {}'.format(newdir))
+            os.makedirs(newdir)
+            if not os.path.exists(newdir):
+                raise RuntimeError('Cannot create new path {}'.format(newdir))
     try:
         shutil.copy2(src,dst)
     except IOError as e:
@@ -553,7 +552,7 @@ def docopy(src,dst,noclobber=False,ftime=None,**kwargs):
         if unlink:
             os.unlink(src)
         if ftime:
-            debug('Setting time on {} to {}'.format(dst,time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(dtime))))
+            debug('Setting time on {} to {}'.format(dst,time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(ftime))))
             os.utime(dst,(ftime,ftime))
         else:
             debug('No timestamp for {}'.format(src))
@@ -788,6 +787,7 @@ if __name__ == '__main__':
                     exif.adjustOrientation(angle=args.rotangle)
                 newname = setFileInfo(dir,fname,exif,rename,args.outdir,args.noclobber)
                 if newname != fname:
+                    debug('Resetting {} to {}'.format(fname,newname))
                     exif.reset(newname)
                 if args.genthumbs:
                     if newname:
