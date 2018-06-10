@@ -5,6 +5,12 @@
 
 ### Other
 
+* Fixed bug where exif reset fails on image rename, attempted to load image data from old name. [Nicole Stevens]
+
+* Fixed issues where exif is updated resetting the timestamp we set based on exif, fixed issue with set options to actually set them! [Nicole Stevens]
+
+* Updated Changelog. [Nicole Stevens]
+
 * Changed option processing so program options can be dumped in pickle format for other python tools to read and process. Got rid of -i|--ignore-no-exif to the -s|--set options flag to allow for setting more than one ignore or set item. See docs. Updated docs, too! [Nicole Stevens]
 
 * Updated Changelog. [Nicole Stevens]
