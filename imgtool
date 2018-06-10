@@ -225,6 +225,14 @@ class fileExif:
                          'File.FullName': self.file,
                          'File.mtime': time.strftime('%Y%m%d%H%M%S',time.localtime(self.mtime))
                     }
+    def touch(self):
+        if not dry:
+            try:
+                debug('setting filetime on {} to {}'.format(newname,time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.fileDate))))
+                os.utime(self.file,(self.fileDate,self.fileDate))
+            except Exception as e:
+                error("Error setting filetime on {}: {}".format(self.file,e))
+
     def dumpkeys(self):
         for k in self.exif.keys():
             logger('KEYDUMP',k)
@@ -507,15 +515,6 @@ def setFileInfo(path,fname,exif,rename,outdir=None,noclobber=False):
                     except Exception as e:
                         error("Error renaming file {} to {}: {}".format(fname,newname,e))
                         raise e
-    if tstamp:
-        if not newname:
-            newname = fname 
-        info = info + 'set time to {} '.format(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(tstamp)))
-        if not dry:
-            try:
-                os.utime(newname,(tstamp,tstamp))
-            except Exception as e:
-                error("Error setting date on {}: {}".format(fname,e))
     if dry or verbose:
         if info == '':
             info = 'No Action'
@@ -533,6 +532,7 @@ def docopy(src,dst,noclobber=False,ftime=None,**kwargs):
     newdir = os.path.dirname(dst)
     [dbase,ext] = os.path.splitext(dst)
     fn = 1
+    debug('docopy parameters',src,dst,noclobber,ftime, unlink)
     while noclobber and os.path.exists(dst):
         dst = '{} ({}){}'.format(dbase,fn,ext)
         fn = fn + 1 
@@ -541,12 +541,19 @@ def docopy(src,dst,noclobber=False,ftime=None,**kwargs):
     if not os.path.exists(newdir):
         os.makedirs(newdir)
     if not os.path.exists(newdir):
-        raise RuntimeError('Cannot create new path {}',newdir)
-    shutil.copy2(src,dst)
+        raise RuntimeError('Cannot create new path {}'.format(newdir))
+    try:
+        shutil.copy2(src,dst)
+    except IOError as e:
+        emsg = 'Cannot create {} from {}: {}'.format(src,dst)
+        if verbose:
+            logger('WARN',emsg)
+        debug(emsg)
     if os.path.exists(dst):
         if unlink:
             os.unlink(src)
         if ftime:
+            debug('Setting time on {} to {}'.format(dst,time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(dtime))))
             os.utime(dst,(ftime,ftime))
         else:
             debug('No timestamp for {}'.format(src))
@@ -672,6 +679,9 @@ if __name__ == '__main__':
                     error('option {} is not valid')
                     optionHelp()
                     sys.exit(1)
+                nv = False if options[k]['value'] else True
+                debug('Setting option {} to {}'.format(k,nv))
+                options[k]['value'] = nv
 
         if args.dumpargs:
             parser.dumpargs()
@@ -794,6 +804,7 @@ if __name__ == '__main__':
                         logger('INFO','Setting processed flag (exif.comment) on {} to {}'.format(exif.file, IMGCOMMENT))
                     exif.exif.comment = IMGCOMMENT
                     exif.exif.write()
+                    exif.touch()
 
 #    except Exception as e:
 #        error('A runtime error has ocurred and operations cannot continue. {}'.format(e))
